@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common_priority_min_name">Min prioritato</string>
+    <string name="common_priority_low_name">Malalta prioritato</string>
+    <string name="common_priority_default_name">Defaŭlta prioritato</string>
+</resources>

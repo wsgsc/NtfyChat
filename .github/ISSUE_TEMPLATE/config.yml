@@ -1,0 +1,12 @@
+blank_issues_enabled: true
+contact_links:
+  - name: "📖 Documentation"
+    url: https://docs.ntfy.sh
+    about: Check out the ntfy documentation for usage details
+  - name: "💬 Discussions"
+    url: https://github.com/wsgsc/NtfyChat/discussions
+    about: Ask questions and discuss features in GitHub Discussions
+  - name: "🐛 Report a Bug"
+    url: https://github.com/wsgsc/NtfyChat/issues/new
+    about: Found a bug? Please report it here
+

@@ -1,0 +1,556 @@
+<resources xmlns:tools="http://schemas.android.com/tools"
+           tools:ignore="MissingTranslation">
+
+    <!-- Common strings -->
+    <string name="common_button_next">Next</string>
+    <string name="common_button_add">Add</string>
+    <string name="common_button_save">Save</string>
+    <string name="common_button_delete">Delete</string>
+    <string name="common_button_copy">Copy</string>
+    <string name="common_copied_to_clipboard">Copied to clipboard</string>
+    <string name="common_service_url">Service URL</string>
+    <string name="common_service_url_placeholder">e.g. https://ntfy.example.com</string>
+    <string name="common_priority_min_name">Min priority</string>
+    <string name="common_priority_low_name">Low priority</string>
+    <string name="common_priority_default_name">Default priority</string>
+    <string name="common_priority_high_name">High priority</string>
+    <string name="common_priority_max_name">Max priority</string>
+
+    <!-- Common certificate strings -->
+    <string name="common_certificate_subject">Subject</string>
+    <string name="common_certificate_issuer">Issuer</string>
+    <string name="common_certificate_fingerprint">SHA-256 fingerprint</string>
+    <string name="common_certificate_valid_from">Valid from</string>
+    <string name="common_certificate_valid_until">Valid until</string>
+    <string name="common_certificate_added_toast">Certificate added</string>
+    <string name="common_certificate_deleted_toast">Certificate deleted</string>
+
+    <!-- Notification channels -->
+    <string name="channel_notifications_group_default_name">Default</string>
+    <string name="channel_subscriber_service_name">Subscription Service</string>
+    <string name="channel_subscriber_notification_title">Listening for incoming notifications</string>
+    <string name="channel_subscriber_notification_instant_text">Subscribed to instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text_one">Subscribed to one instant delivery topic</string>
+    <string name="channel_subscriber_notification_instant_text_two">Subscribed to two instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text_three">Subscribed to three instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text_four">Subscribed to four instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text_five">Subscribed to five instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text_six">Subscribed to six instant delivery topics</string>
+    <string name="channel_subscriber_notification_instant_text_more">Subscribed to %1$d instant delivery topics</string>
+    <string name="channel_subscriber_notification_noinstant_text">Subscribed to topics</string>
+    <string name="channel_subscriber_notification_noinstant_text_one">Subscribed to one topic</string>
+    <string name="channel_subscriber_notification_noinstant_text_two">Subscribed to two topics</string>
+    <string name="channel_subscriber_notification_noinstant_text_three">Subscribed to three topics</string>
+    <string name="channel_subscriber_notification_noinstant_text_four">Subscribed to four topics</string>
+    <string name="channel_subscriber_notification_noinstant_text_five">Subscribed to five topics</string>
+    <string name="channel_subscriber_notification_noinstant_text_six">Subscribed to six topics</string>
+    <string name="channel_subscriber_notification_noinstant_text_more">Subscribed to %1$d topics</string>
+
+    <!-- Common refresh toasts -->
+    <string name="refresh_message_result">%1$d notification(s) received</string>
+    <string name="refresh_message_no_results">Everything is up to date</string>
+    <string name="refresh_message_error">Could not refresh %1$d subscriptions\n\n%2$s</string>
+    <string name="refresh_message_error_one">Could not refresh subscription: %1$s</string>
+
+    <!-- Main activity: Action bar -->
+    <string name="main_action_bar_title">Subscribed topics</string>
+    <string name="main_menu_connection_error">Connection error</string>
+    <string name="main_menu_notifications_enabled">Notifications on</string>
+    <string name="main_menu_notifications_disabled_forever">Notifications muted</string>
+    <string name="main_menu_notifications_disabled_until">Notifications muted until %1$s</string>
+    <string name="main_menu_settings_title">Settings</string>
+    <string name="main_menu_report_bug_title">Report a bug</string>
+    <string name="main_menu_docs_title">Read the docs</string>
+    <string name="main_menu_rate_title">Rate the app ⭐</string>
+
+    <!-- Main activity: Action mode -->
+    <string name="main_action_mode_menu_unsubscribe">Unsubscribe</string>
+    <string name="main_action_mode_delete_dialog_message">
+        Unsubscribe from the selected topic(s) and
+        permanently delete all notifications?
+    </string>
+    <string name="main_action_mode_delete_dialog_permanently_delete">Delete permanently</string>
+    <string name="main_action_mode_delete_dialog_cancel">Cancel</string>
+
+    <!-- Main activity: List and such -->
+    <string name="main_item_status_text_one">%1$d notification</string>
+    <string name="main_item_status_text_not_one">%1$d notifications</string>
+    <string name="main_item_status_reconnecting">reconnecting …</string>
+    <string name="main_item_status_unified_push">%1$s (UnifiedPush)</string>
+    <string name="main_item_date_yesterday">yesterday</string>
+    <string name="main_add_button_description">Add subscription</string>
+    <string name="main_no_subscriptions_text">It looks like you don\'t have any subscriptions yet.</string>
+    <string name="main_how_to_intro">
+        Click the + to create or subscribe to a topic.
+        Afterwards you receive notifications on your device
+        when sending messages via PUT or POST.
+    </string>
+    <string name="main_how_to_link">Detailed instructions available on ntfy.sh, and in the docs.
+    </string>
+    <string name="main_unified_push_toast">This subscription is managed by %1$s via UnifiedPush</string>
+
+    <!-- Main activity: Battery banner -->
+    <string name="main_banner_battery_text">Battery optimization should be off for the app to avoid notification delivery issues.</string>
+    <string name="main_banner_battery_button_remind_later">Ask later</string>
+    <string name="main_banner_battery_button_dismiss">Dismiss</string>
+    <string name="main_banner_battery_button_fix_now">Fix now</string>
+
+    <!-- Main activity: WebSocket banner -->
+    <string name="main_banner_websocket_text">Switching to WebSockets is the recommended way to connect to your server, and could improve battery life, but may require <a href="https://ntfy.sh/docs/config/#nginxapache2caddy">additional config in your proxy</a>. This can be toggled in the Settings.</string>
+    <string name="main_banner_websocket_button_remind_later">Ask later</string>
+    <string name="main_banner_websocket_button_dismiss">Dismiss</string>
+    <string name="main_banner_websocket_button_enable_now">Enable now</string>
+
+    <!-- Main activity: WebSocket Reconnect banner -->
+    <string name="main_banner_websocket_reconnect_text">To ensure WebSockets reconnect in the background, grant the "Alarm &amp; Reminders" permission to ntfy</string>
+    <string name="main_banner_websocket_reconnect_button_remind_later">Ask later</string>
+    <string name="main_banner_websocket_reconnect_button_dismiss">Dismiss</string>
+    <string name="main_banner_websocket_reconnect_button_enable_now">Grant now</string>
+
+    <!-- Add dialog -->
+    <string name="add_dialog_title">Subscribe to topic</string>
+    <string name="add_dialog_description_below">
+        Topics may not be password-protected, so choose a name that is hard to guess.
+        Once subscribed, you can PUT/POST notifications.
+    </string>
+    <string name="add_dialog_topic_name_hint">Topic name, e.g. phils_alerts</string>
+    <string name="add_dialog_use_another_server">Use another server</string>
+    <string name="add_dialog_use_another_server_description">Enter service URLs below to subscribe to topics from other servers.</string>
+    <string name="add_dialog_instant_delivery">Instant delivery in doze mode</string>
+    <string name="add_dialog_instant_delivery_description">Ensures messages are delivered immediately, even if the device is inactive.</string>
+    <string name="add_dialog_foreground_description">Instant delivery is always on for hosts other than %1$s.</string>
+    <string name="add_dialog_button_cancel">Cancel</string>
+    <string name="add_dialog_button_subscribe">Subscribe</string>
+    <string name="add_dialog_button_back">Back</string>
+    <string name="add_dialog_button_login">Log in</string>
+    <string name="add_dialog_error_connection_failed">Connection failed: %1$s</string>
+    <string name="add_dialog_login_title">Login required</string>
+    <string name="add_dialog_login_description">This topic requires you to login. Please type in a username and password.</string>
+    <string name="add_dialog_login_username_hint">Username</string>
+    <string name="add_dialog_login_password_hint">Password</string>
+    <string name="add_dialog_login_error_not_authorized">Login failed. User %1$s not authorized.</string>
+    <string name="add_dialog_login_new_user">New user</string>
+    <string name="add_dialog_base_urls_dropdown_choose">Choose service URL</string>
+    <string name="add_dialog_base_urls_dropdown_clear">Clear service URL</string>
+    <string name="add_dialog_error_ssl_untrusted">Server certificate not trusted</string>
+
+    <!-- Detail activity -->
+    <string name="detail_no_notifications_text">You haven\'t received any notifications for this topic yet.</string>
+    <string name="detail_how_to_intro">To send notifications to this topic, simply PUT or POST to the topic URL.
+    </string>
+    <string name="detail_how_to_example"><![CDATA[ Example (using curl):<br/><tt>$ curl -d \"Hi\" %1$s</tt> ]]></string>
+    <string name="detail_how_to_link">Detailed instructions available on ntfy.sh, and in the docs.
+    </string>
+    <string name="detail_clear_dialog_message">Delete all of the notifications in this topic?
+    </string>
+    <string name="detail_clear_dialog_permanently_delete">Delete permanently</string>
+    <string name="detail_clear_dialog_cancel">Cancel</string>
+    <string name="detail_delete_dialog_message">
+        Unsubscribe from this topic and delete
+        all received notifications?
+    </string>
+    <string name="detail_delete_dialog_permanently_delete">Delete permanently</string>
+    <string name="detail_delete_dialog_cancel">Cancel</string>
+    <string name="detail_test_title">Test: You can set a title if you like.</string>
+    <string name="detail_test_message">This is a test notification from the ntfy Android app. It has a level %1$d priority.
+        If you send another, it may look different.
+    </string>
+    <string name="detail_test_message_error">Cannot send message: %1$s</string>
+    <string name="detail_test_message_error_unauthorized_anon">Cannot send message: Anonymous publishing not allowed.</string>
+    <string name="detail_test_message_error_unauthorized_user">Cannot send message: The user \"%1$s\" is not authorized.</string>
+    <string name="detail_test_message_error_too_large">Cannot send message: The attachment is too big.</string>
+    <string name="detail_instant_delivery_enabled">Instant delivery on</string>
+    <string name="detail_instant_delivery_disabled">Instant delivery off</string>
+    <string name="detail_deep_link_subscribed_toast_message">Subscribed to topic %1$s</string>
+    <string name="detail_item_tags">Tags: %1$s</string>
+    <string name="detail_item_snack_deleted">Notification deleted</string>
+    <string name="detail_item_snack_undo">Undo</string>
+    <string name="detail_item_menu_open">Open file</string>
+    <string name="detail_item_menu_delete">Delete file</string>
+    <string name="detail_item_menu_download">Download file</string>
+    <string name="detail_item_menu_cancel">Cancel download</string>
+    <string name="detail_item_menu_save_file">Save file</string>
+    <string name="detail_item_menu_copy_url">Copy URL</string>
+    <string name="detail_item_menu_copy_contents">Copy notification</string>
+    <string name="detail_item_saved_successfully">Saved as \"%1$s\" in the \"Downloads\" folder</string>
+    <string name="detail_item_cannot_download">Cannot open or download attachment. The link expired and no local file could be found.</string>
+    <string name="detail_item_cannot_open">Cannot open attachment: %1$s</string>
+    <string name="detail_item_cannot_open_not_found">Cannot open attachment: The file may have been deleted, or no installed app can open the file.</string>
+    <string name="detail_item_cannot_open_url">Cannot open URL: %1$s</string>
+    <string name="detail_item_cannot_open_apk">Apps cannot be installed anymore. Download via browser instead. See issue #531 for details.</string>
+    <string name="detail_item_cannot_save">Cannot save attachment: %1$s</string>
+    <string name="detail_item_cannot_delete">Cannot delete attachment: %1$s</string>
+    <string name="detail_item_download_failed">Could not download attachment: %1$s</string>
+    <string name="detail_item_download_info_not_downloaded">not downloaded</string>
+    <string name="detail_item_download_info_not_downloaded_expired">not downloaded, link expired</string>
+    <string name="detail_item_download_info_not_downloaded_expires_x">not downloaded, expires %1$s</string>
+    <string name="detail_item_download_info_downloading_x_percent">%1$d%% downloaded</string>
+    <string name="detail_item_download_info_deleted">deleted</string>
+    <string name="detail_item_download_info_deleted_expired">deleted, link expired</string>
+    <string name="detail_item_download_info_deleted_expires_x">deleted, link expires %1$s</string>
+    <string name="detail_item_download_info_download_failed">download failed</string>
+    <string name="detail_item_download_info_download_failed_expired">download failed, link expired</string>
+    <string name="detail_item_download_info_download_failed_expires_x">download failed, link expires %1$s</string>
+
+    <!-- Detail activity: Action bar -->
+    <string name="detail_menu_notifications_enabled">Notifications on</string>
+    <string name="detail_menu_notifications_disabled_forever">Notifications muted</string>
+    <string name="detail_menu_notifications_disabled_until">Notifications muted until %1$s</string>
+    <string name="detail_menu_enable_instant">Enable instant delivery</string>
+    <string name="detail_menu_disable_instant">Turn off instant delivery</string>
+    <string name="detail_menu_test">Send test notification</string>
+    <string name="detail_menu_copy_url">Copy topic address</string>
+    <string name="detail_menu_clear">Clear all notifications</string>
+    <string name="detail_menu_settings">Subscription settings</string>
+    <string name="detail_menu_unsubscribe">Unsubscribe</string>
+
+    <!-- Detail activity: Action mode -->
+    <string name="detail_action_mode_menu_delete">Delete</string>
+    <string name="detail_action_mode_delete_dialog_message">
+        Delete the selected notification(s) permanently?
+    </string>
+    <string name="detail_action_mode_delete_dialog_permanently_delete">Delete permanently</string>
+    <string name="detail_action_mode_delete_dialog_cancel">Cancel</string>
+
+    <!-- Detail settings -->
+    <string name="detail_settings_title">Subscription settings</string>
+    <!-- ... -->
+
+    <!-- Publish dialog -->
+    <string name="publish_dialog_title">Publish to %1$s</string>
+    <string name="publish_dialog_title_hint">Title</string>
+    <string name="publish_dialog_title_placeholder">e.g. Someone is at the door</string>
+    <string name="publish_dialog_message_hint">Message</string>
+    <string name="publish_dialog_tags_hint">Tags</string>
+    <string name="publish_dialog_tags_placeholder">e.g. warning, skull</string>
+    <string name="publish_dialog_priority_hint">Priority</string>
+    <string name="publish_dialog_button_publish">Publish</string>
+    <string name="publish_dialog_error_sending">Cannot publish message: %1$s</string>
+    <string name="publish_dialog_error_server">Cannot publish message: %1$s (code %2$d)</string>
+    <string name="publish_dialog_error_encryption">Failed to encrypt message: %1$s</string>
+    <string name="publish_dialog_error_no_encryption_password">Cannot send message: encryption password not configured for this subscription</string>
+    <string name="publish_dialog_message_published">Message published</string>
+    <string name="publish_dialog_uploading">Uploading: %1$s (%2$s / %3$s)</string>
+    <string name="publish_dialog_upload_cancelled">Upload cancelled</string>
+    <string name="publish_dialog_chip_title">Title</string>
+    <string name="publish_dialog_chip_tags">Tags</string>
+    <string name="publish_dialog_chip_priority">Priority</string>
+    <string name="publish_dialog_chip_click_url">Click URL</string>
+    <string name="publish_dialog_chip_email">Email</string>
+    <string name="publish_dialog_chip_delay">Delay</string>
+    <string name="publish_dialog_chip_markdown">Markdown</string>
+    <string name="publish_dialog_chip_attach_url">Attach by URL</string>
+    <string name="publish_dialog_chip_attach_file">Attach local file</string>
+    <string name="publish_dialog_chip_phone_call">Phone call</string>
+    <string name="publish_dialog_click_url_hint">Click URL</string>
+    <string name="publish_dialog_click_url_placeholder">e.g. https://example.com/alerts/1234</string>
+    <string name="publish_dialog_email_hint">Email</string>
+    <string name="publish_dialog_email_placeholder">e.g. phil@example.com</string>
+    <string name="publish_dialog_delay_hint">Delay delivery</string>
+    <string name="publish_dialog_delay_placeholder">e.g. 30m, 1h, today 9pm (English only)</string>
+    <string name="publish_dialog_attach_url_hint">Attachment URL</string>
+    <string name="publish_dialog_attach_url_placeholder">e.g. https://example.com/flowers.jpg</string>
+    <string name="publish_dialog_attach_filename_hint">Attachment filename</string>
+    <string name="publish_dialog_attach_filename_placeholder">e.g. lilies.jpg</string>
+    <string name="publish_dialog_phone_call_hint">Phone call</string>
+    <string name="publish_dialog_phone_call_placeholder">e.g. +1234567890</string>
+    <string name="publish_dialog_docs_text">For examples and a detailed description of all publish features, please refer to the <a href="https://docs.ntfy.sh/publish/">documentation</a>.</string>
+
+    <!-- Message bar -->
+    <string name="message_bar_hint">Type a message here</string>
+    <string name="message_bar_publish_button_description">Publish message</string>
+    <string name="message_bar_expand_button_description">More options</string>
+
+    <!-- Detail activity: Publish FAB -->
+    <string name="detail_fab_publish_description">Publish notification</string>
+
+    <!-- Share activity -->
+    <string name="share_title">Share</string>
+    <string name="share_menu_send">Share</string>
+    <string name="share_content_title">Message preview</string>
+    <string name="share_content_text_hint">Add content to share here</string>
+    <string name="share_content_image_text">An image was shared with you</string>
+    <string name="share_content_image_error">Cannot read image: %1$s</string>
+    <string name="share_content_file_text">A file was shared with you</string>
+    <string name="share_content_file_error">Cannot read file info: %1$s</string>
+    <string name="share_topic_title">Share to</string>
+    <string name="share_suggested_topics">Suggested topics</string>
+    <string name="share_successful">Message published</string>
+
+    <!-- Notification dialog -->
+    <string name="notification_dialog_title">Mute notifications</string>
+    <string name="notification_dialog_cancel">Cancel</string>
+    <string name="notification_dialog_enabled_toast_message">Notifications resumed</string>
+    <string name="notification_dialog_muted_forever_toast_message">Notifications muted</string>
+    <string name="notification_dialog_muted_until_toast_message">Notifications muted until %1$s</string>
+    <string name="notification_dialog_show_all">Show all notifications</string>
+    <string name="notification_dialog_30min">30 minutes</string>
+    <string name="notification_dialog_1h">1 hour</string>
+    <string name="notification_dialog_2h">2 hours</string>
+    <string name="notification_dialog_8h">8 hours</string>
+    <string name="notification_dialog_tomorrow">Until tomorrow</string>
+    <string name="notification_dialog_forever">Until resumed</string>
+
+    <!-- Connection error dialog -->
+    <string name="connection_error_dialog_title">Connection error</string>
+    <string name="connection_error_dialog_message">There was a problem connecting to %1$s. The app will keep trying to reconnect in the background.</string>
+    <string name="connection_error_dialog_connection_refused">Connection refused. The server may be down or the address may be incorrect.</string>
+    <string name="connection_error_dialog_websocket_not_supported">WebSocket not supported. The server may not support WebSocket connections, or the address may be incorrect.</string>
+    <string name="connection_error_dialog_not_authorized">Not authorized. The server returned a HTTP 401/403 response. Please check if your username and password are correct.</string>
+    <string name="connection_error_dialog_retry_now">Retry now</string>
+    <string name="connection_error_dialog_retry_countdown">Retrying in %1$ds…</string>
+    <string name="connection_error_dialog_retrying">Retrying…</string>
+
+    <!-- Notification popup -->
+    <string name="notification_popup_action_open">Open</string>
+    <string name="notification_popup_action_browse">Browse</string>
+    <string name="notification_popup_action_download">Download</string>
+    <string name="notification_popup_action_cancel">Cancel</string>
+    <string name="notification_popup_file">%1$s\nFile: %2$s</string>
+    <string name="notification_popup_file_downloading">Downloading %1$s, %2$d%%\n%3$s</string>
+    <string name="notification_popup_file_download_successful">%1$s\nFile: %2$s, downloaded</string>
+    <string name="notification_popup_file_download_failed">%1$s\nFile: %2$s, download failed</string>
+    <string name="notification_popup_user_action_failed">"%1$s" failed: %2$s</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_notifications_header">Notifications</string>
+    <string name="settings_notifications_muted_until_title">Mute notifications</string>
+    <string name="settings_notifications_muted_until_show_all">Showing all notifications</string>
+    <string name="settings_notifications_muted_until_forever">Notifications muted until resumed</string>
+    <string name="settings_notifications_muted_until_x">Notifications muted until %1$s</string>
+    <string name="settings_notifications_min_priority_title">Minimum priority</string>
+    <string name="settings_notifications_min_priority_summary_any">Showing all notifications</string>
+    <string name="settings_notifications_min_priority_summary_x_or_higher">Show notifications if priority is %1$d (%2$s) or above</string>
+    <string name="settings_notifications_min_priority_summary_max">Show notifications if priority is 5 (max)</string>
+    <string name="settings_notifications_min_priority_min">Any priority</string>
+    <string name="settings_notifications_min_priority_low">Low priority and above</string>
+    <string name="settings_notifications_min_priority_default">Default priority and above</string>
+    <string name="settings_notifications_min_priority_high">High priority and above</string>
+    <string name="settings_notifications_min_priority_max">Only max priority</string>
+    <string name="settings_notifications_priority_min">min</string>
+    <string name="settings_notifications_priority_low">low</string>
+    <string name="settings_notifications_priority_default">default</string>
+    <string name="settings_notifications_priority_high">high</string>
+    <string name="settings_notifications_priority_max">max</string>
+    <string name="settings_notifications_channel_prefs_title">Channel settings</string>
+    <string name="settings_notifications_channel_prefs_summary">Do Not Disturb (DND) override, sounds, etc.</string>
+    <string name="settings_notifications_auto_download_title">Download attachments</string>
+    <string name="settings_notifications_auto_download_summary_always">Auto-download all attachments</string>
+    <string name="settings_notifications_auto_download_summary_never">Never auto-download attachments</string>
+    <string name="settings_notifications_auto_download_summary_smaller_than_x">Auto-download attachments up to %1$s</string>
+    <string name="settings_notifications_auto_download_never">Never auto-download anything</string>
+    <string name="settings_notifications_auto_download_always">Auto-download everything</string>
+    <string name="settings_notifications_auto_download_100k">If below 100 kB</string>
+    <string name="settings_notifications_auto_download_500k">If below 500 kB</string>
+    <string name="settings_notifications_auto_download_1m">If below 1 MB</string>
+    <string name="settings_notifications_auto_download_5m">If below 5 MB</string>
+    <string name="settings_notifications_auto_download_10m">If below 10 MB</string>
+    <string name="settings_notifications_auto_download_50m">If below 50 MB</string>
+    <string name="settings_notifications_auto_delete_title">Delete notifications</string>
+    <string name="settings_notifications_auto_delete_summary_never">Never automatically delete notifications</string>
+    <string name="settings_notifications_auto_delete_summary_one_day">Auto-delete notifications after one day</string>
+    <string name="settings_notifications_auto_delete_summary_three_days">Auto-delete notifications after 3 days</string>
+    <string name="settings_notifications_auto_delete_summary_one_week">Auto-delete notifications after one week</string>
+    <string name="settings_notifications_auto_delete_summary_one_month">Auto-delete notifications after one month</string>
+    <string name="settings_notifications_auto_delete_summary_three_months">Auto-delete notifications after 3 months</string>
+    <string name="settings_notifications_auto_delete_never">Never</string>
+    <string name="settings_notifications_auto_delete_one_day">After one day</string>
+    <string name="settings_notifications_auto_delete_three_days">After 3 days</string>
+    <string name="settings_notifications_auto_delete_one_week">After one week</string>
+    <string name="settings_notifications_auto_delete_one_month">After one month</string>
+    <string name="settings_notifications_auto_delete_three_months">After 3 months</string>
+    <string name="settings_notifications_insistent_max_priority_title">Keep alerting for highest priority</string>
+    <string name="settings_notifications_insistent_max_priority_summary_enabled">Max priority notifications continuously alert until dismissed</string>
+    <string name="settings_notifications_insistent_max_priority_summary_disabled">Max priority notifications only alert once</string>
+    <string name="settings_general_header">General</string>
+    <string name="settings_appearance_header">Appearance</string>
+    <string name="settings_general_default_base_url_title">Default server</string>
+    <string name="settings_general_default_base_url_message">Enter your server\'s root URL to use your own server as a default when subscribing to new topics and/or sharing to topics.</string>
+    <string name="settings_general_default_base_url_default_summary">%1$s (default)</string>
+    <string name="settings_general_users_title">Manage users</string>
+    <string name="settings_general_users_summary">Add/remove users for protected topics</string>
+    <string name="settings_general_users_prefs_title">Users</string>
+    <string name="settings_general_users_prefs_user_not_used">Not used by any topics</string>
+    <string name="settings_general_users_prefs_user_used_by_one">Used by topic %1$s</string>
+    <string name="settings_general_users_prefs_user_used_by_many">Used by topics %1$s</string>
+    <string name="settings_general_users_prefs_user_add">Add users</string>
+    <string name="settings_general_users_prefs_user_add_title">Add new user</string>
+    <string name="settings_general_users_prefs_user_add_summary">Create a new user for a new server</string>
+    <string name="settings_general_dark_mode_title">Dark mode</string>
+    <string name="settings_general_dark_mode_summary_system">Using the system default</string>
+    <string name="settings_general_dark_mode_summary_light">Light mode on</string>
+    <string name="settings_general_dark_mode_summary_dark">Dark mode on. Are you a vampire?</string>
+    <string name="settings_general_dark_mode_entry_system">Use system default</string>
+    <string name="settings_general_dark_mode_entry_light">Light mode</string>
+    <string name="settings_general_dark_mode_entry_dark">Dark mode</string>
+    <string name="settings_general_language_title">Language</string>
+    <string name="settings_general_language_summary_system">Using system default</string>
+    <string name="settings_general_language_system_default">System default</string>
+    <string name="settings_general_dynamic_colors_title">Dynamic colors</string>
+    <string name="settings_general_dynamic_colors_summary_enabled">Using the dynamic system colors</string>
+    <string name="settings_general_dynamic_colors_summary_disabled">Using the ntfy theme colors</string>
+    <string name="settings_general_message_bar_title">Show message bar</string>
+    <string name="settings_general_message_bar_summary_enabled">Message bar shown at bottom of topic view</string>
+    <string name="settings_general_message_bar_summary_disabled">Publish button shown at bottom of topic view</string>
+    <string name="settings_backup_restore_header">Backup &amp; Restore</string>
+    <string name="settings_backup_restore_backup_title">Back up to file</string>
+    <string name="settings_backup_restore_backup_summary">Export config, notifications, and users</string>
+    <string name="settings_backup_restore_backup_entry_everything">Everything</string>
+    <string name="settings_backup_restore_backup_entry_everything_no_users">Everything, except users</string>
+    <string name="settings_backup_restore_backup_entry_settings_only">Settings only</string>
+    <string name="settings_backup_restore_backup_successful">Backup created</string>
+    <string name="settings_backup_restore_backup_failed">Backup failed: %1$s</string>
+    <string name="settings_backup_restore_restore_title">Restore from file</string>
+    <string name="settings_backup_restore_restore_summary">Import config, notifications and users</string>
+    <string name="settings_backup_restore_restore_successful">Restore successful</string>
+    <string name="settings_backup_restore_restore_failed">Restore failed: %1$s</string>
+    <string name="settings_advanced_header">Advanced</string>
+    <string name="settings_advanced_broadcast_title">Broadcast messages</string>
+    <string name="settings_advanced_broadcast_summary_enabled">Apps can receive incoming notifications as broadcasts</string>
+    <string name="settings_advanced_broadcast_summary_disabled">Apps cannot receive notifications as broadcasts</string>
+    <string name="settings_advanced_unifiedpush_title">Enable UnifiedPush</string>
+    <string name="settings_advanced_unifiedpush_summary_enabled">ntfy will act as a UnifiedPush distributor</string>
+    <string name="settings_advanced_unifiedpush_summary_disabled">ntfy will not act as a UnifiedPush distributor</string>
+    <string name="settings_advanced_custom_headers_title">Custom headers</string>
+    <string name="settings_advanced_custom_headers_summary">Define custom HTTP headers that will be sent along with every request, e.g. if your ntfy server is behind an authenticated proxy or tunnel.</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add">Add header</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_title">Add a header for a server</string>
+    <string name="settings_advanced_custom_headers_prefs_header_add_summary">Headers are included with every HTTP request. Each ntfy server can have its own set of custom headers.</string>
+    <string name="settings_advanced_record_logs_title">Record logs</string>
+    <string name="settings_advanced_record_logs_summary_enabled">Logging (up to 1,000 entries) to device …</string>
+    <string name="settings_advanced_record_logs_summary_disabled">Turn on logging, so you can share logs later to diagnose issues.</string>
+    <string name="settings_advanced_export_logs_title">Copy/upload logs</string>
+    <string name="settings_advanced_export_logs_summary">Copy logs to the clipboard, or upload to nopaste.net (owned by the ntfy author). Hostnames and topics can be censored, notifications will never be.</string>
+    <string name="settings_advanced_export_logs_entry_copy_original">Copy to clipboard</string>
+    <string name="settings_advanced_export_logs_entry_copy_scrubbed">Copy to clipboard (censored)</string>
+    <string name="settings_advanced_export_logs_entry_upload_original">Upload and copy link</string>
+    <string name="settings_advanced_export_logs_entry_upload_scrubbed">Upload and copy link (censored)</string>
+    <string name="settings_advanced_export_logs_copied_logs">Logs copied to clipboard</string>
+    <string name="settings_advanced_export_logs_uploading">Uploading log …</string>
+    <string name="settings_advanced_export_logs_copied_url">Logs uploaded and URL copied</string>
+    <string name="settings_advanced_export_logs_error_uploading">Could not upload logs: %1$s</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_text">These topics/hostnames were replaced with fruit names, so you can share the log without worry:\n\n%1$s\n\nPasswords are scrubbed, but not listed here.</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_empty">No topics/hostnames were redacted. Maybe you don\'t have any subscriptions?</string>
+    <string name="settings_advanced_export_logs_scrub_dialog_button_ok">OK</string>
+    <string name="settings_advanced_clear_logs_title">Clear logs</string>
+    <string name="settings_advanced_clear_logs_summary">Delete previously recorded logs, and start over</string>
+    <string name="settings_advanced_clear_logs_deleted_toast">Logs deleted</string>
+    <string name="settings_advanced_connection_protocol_title">Connection protocol</string>
+    <string name="settings_advanced_connection_protocol_summary_jsonhttp">Use a JSON stream over HTTP to connect to the server. This method is battle-tested, but may consume more battery.</string>
+    <string name="settings_advanced_connection_protocol_summary_ws">Use WebSockets to connect to the server. This is the recommended method, but may require additional config in your proxy.</string>
+    <string name="settings_advanced_connection_protocol_entry_jsonhttp">JSON stream over HTTP</string>
+    <string name="settings_advanced_connection_protocol_entry_ws">WebSockets</string>
+    <string name="settings_advanced_exact_alarms_title">Exact alarms</string>
+    <string name="settings_advanced_exact_alarms_true">ntfy can schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to revoke the permission.</string>
+    <string name="settings_advanced_exact_alarms_false">ntfy cannot schedule exact alarms. Exact alarms are required to reconnect WebSockets in the background. Click to grant the permission.</string>
+    <string name="settings_advanced_certificates_title">Manage certificates</string>
+    <string name="settings_advanced_certificates_summary">Add certificates to the trust store and manage client certificates for mTLS</string>
+    <string name="settings_advanced_certificates_trusted_header">Trusted certificates</string>
+    <string name="settings_advanced_certificates_trusted_item_summary">Pinned certificate, issued by %1$s, expires %2$s, used for connections to %3$s</string>
+    <string name="settings_advanced_certificates_trusted_item_summary_expired">Pinned certificate, issued by %1$s, expired, used for connections to %2$s</string>
+    <string name="settings_advanced_certificates_trusted_add_title">Add a trusted certificate</string>
+    <string name="settings_advanced_certificates_trusted_add_summary">Import a certificate into the trust store (PEM). When connecting to the ntfy server, this certificate will be trusted.</string>
+    <string name="settings_advanced_certificates_client_header">Client certificates (mTLS)</string>
+    <string name="settings_advanced_certificates_client_item_summary">Client certificate, issued by %1$s, expires %2$s, used for connections to %3$s</string>
+    <string name="settings_advanced_certificates_client_item_summary_expired">Client certificate, issued by %1$s, expired, used for connections to %2$s</string>
+    <string name="settings_advanced_certificates_client_add_title">Add a client certificate</string>
+    <string name="settings_advanced_certificates_client_add_summary">Import certificate for mutual TLS authentication (PKCS#12). This certificate will be used when connecting to the server.</string>
+    <string name="settings_advanced_certificates_error_invalid_cert">Invalid certificate file</string>
+    <string name="settings_advanced_certificates_error_invalid_p12">Invalid PKCS#12 file</string>
+    <string name="settings_about_header">About</string>
+    <string name="settings_about_version_title">Version</string>
+    <string name="settings_about_version_format">ntfy %1$s (%2$s)</string>
+
+    <!-- Subscription settings (most strings are re-used from above) -->
+    <string name="detail_settings_notifications_instant_title">Instant delivery</string>
+    <string name="detail_settings_notifications_instant_summary_on">Notifications are delivered instantly. Requires a foreground service and consumes more battery.</string>
+    <string name="detail_settings_notifications_instant_summary_off">Notifications are delivered using Firebase. Delivery may be delayed, but consumes less battery.</string>
+    <string name="detail_settings_notifications_dedicated_channels_title">Custom notification settings</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_on">Using custom settings for this subscription</string>
+    <string name="detail_settings_notifications_dedicated_channels_summary_off">Using default settings (sounds, Do Not Disturb override, etc.)</string>
+    <string name="detail_settings_notifications_open_channels_title">Configure notification settings</string>
+    <string name="detail_settings_notifications_open_channels_summary">Do Not Disturb (DND) override, sounds, etc.</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_enabled">Keep alerting</string>
+    <string name="detail_settings_notifications_insistent_max_priority_list_item_disabled">Alert only once</string>
+    <string name="detail_settings_appearance_header">Appearance</string>
+    <string name="detail_settings_appearance_icon_set_title">Subscription icon</string>
+    <string name="detail_settings_appearance_icon_set_summary">Set an icon to be displayed in notifications</string>
+    <string name="detail_settings_appearance_icon_remove_title">Subscription icon (tap to remove)</string>
+    <string name="detail_settings_appearance_icon_remove_summary">Icon displayed in notifications for this topic</string>
+    <string name="detail_settings_appearance_icon_error_saving">Unable to save icon: %1$s</string>
+    <string name="detail_settings_appearance_display_name_title">Display name</string>
+    <string name="detail_settings_appearance_display_name_message">Set a custom display name for this subscription. Leave blank for default (%1$s).</string>
+    <string name="detail_settings_appearance_display_name_default_summary">%1$s (default)</string>
+    <string name="detail_settings_encryption_header">Encryption</string>
+    <string name="detail_settings_encryption_enabled_title">Enable encryption</string>
+    <string name="detail_settings_encryption_enabled_summary">Encrypt all messages for this subscription</string>
+    <string name="detail_settings_appearance_username_title">Username</string>
+    <string name="detail_settings_appearance_username_summary">Set username for encrypted messages</string>
+    <string name="detail_settings_appearance_encrypt_password_title">Encryption password</string>
+    <string name="detail_settings_appearance_encrypt_password_summary">Set password for message encryption</string>
+    <string name="detail_settings_global_setting_title">Use global setting</string>
+    <string name="detail_settings_global_setting_suffix">using global setting</string>
+    <string name="detail_settings_about_header">About</string>
+    <string name="detail_settings_about_topic_url_title">Topic URL</string>
+
+    <!-- User add/edit dialog (UserFragment) -->
+    <string name="user_dialog_title_add">Add user</string>
+    <string name="user_dialog_title_edit">Edit user</string>
+    <string name="user_dialog_description_add">You can add a user here. All topics for the given server will use this user.</string>
+    <string name="user_dialog_description_edit">You may edit username/password for the selected user, or delete it.</string>
+    <string name="user_dialog_base_url_error_authorization_header_exists">Cannot add user if custom Authorization header is set for this server</string>
+    <string name="user_dialog_username_hint">Username</string>
+    <string name="user_dialog_password_hint_add">Password</string>
+    <string name="user_dialog_password_hint_edit">Password (unchanged if left blank)</string>
+    <string name="user_dialog_button_add">Add user</string>
+    <string name="user_dialog_button_cancel">Cancel</string>
+    <string name="user_dialog_button_delete">Delete user</string>
+
+    <!-- Custom headers dialog (CustomHeaderFragment) -->
+    <string name="custom_headers_dialog_title_add">Add custom header</string>
+    <string name="custom_headers_dialog_title_edit">Edit custom header</string>
+    <string name="custom_headers_dialog_name_hint">Header name (e.g. CF-Access-Client-Id)</string>
+    <string name="custom_headers_dialog_value_hint">Header value (e.g. 9f3c2e4a1b2d4e)</string>
+    <string name="custom_headers_dialog_description_add">Add a custom HTTP header that will be sent with every request to the specified server.</string>
+    <string name="custom_headers_dialog_description_edit">You may edit the header name/value for the selected header, or delete it.</string>
+    <string name="custom_headers_dialog_error_invalid_name">Header name contains invalid characters</string>
+    <string name="custom_headers_dialog_error_reserved_name">This header is reserved and set by ntfy</string>
+    <string name="custom_headers_dialog_error_user_exists">Cannot add Authorization header if a user is configured for this server</string>
+    <string name="custom_headers_dialog_error_duplicate">A header with this name already exists for this server</string>
+
+    <!-- Trusted certificate dialog (TrustedCertificateFragment) -->
+    <string name="trusted_certificate_dialog_title">Certificate details</string>
+    <string name="trusted_certificate_dialog_title_unknown">Security warning</string>
+    <string name="trusted_certificate_dialog_title_add">Add trusted certificate</string>
+    <string name="trusted_certificate_dialog_security_title">Your connection is not private</string>
+    <string name="trusted_certificate_dialog_security_description">The server certificate is not trusted. Attackers might be trying to steal your information. Do not proceed unless you know why this certificate is not trusted.</string>
+    <string name="trusted_certificate_dialog_description_add">You\'ve selected a certificate file. Review the details below before adding it to your trusted certificates.</string>
+    <string name="trusted_certificate_dialog_description_view">This certificate is used for connections to the service URL below. You manually added this exception.</string>
+    <string name="trusted_certificate_dialog_description_page1">Enter the service URL that this certificate should be pinned to. The certificate will only be trusted for this URL.</string>
+    <string name="trusted_certificate_dialog_expired_warning">Warning: This certificate has expired.</string>
+    <string name="trusted_certificate_dialog_not_yet_valid_warning">Warning: This certificate is not yet valid.</string>
+    <string name="trusted_certificate_dialog_error_invalid_url">Invalid URL</string>
+    <string name="trusted_certificate_dialog_error_parse">Unable to load certificate: %1$s</string>
+    <string name="trusted_certificate_dialog_button_trust">Trust</string>
+
+    <!-- Client certificate dialog (ClientCertificateFragment) -->
+    <string name="client_certificate_dialog_title">Client certificate</string>
+    <string name="client_certificate_dialog_title_add">Add client certificate</string>
+    <string name="client_certificate_dialog_description_page1">Enter the service URL this certificate should be used for, and the password for the PKCS#12 file.</string>
+    <string name="client_certificate_dialog_description_page2">Review the certificate details and save to add this client certificate. This certificate will be used to authenticate with the server.</string>
+    <string name="client_certificate_dialog_password_hint">Password</string>
+    <string name="client_certificate_dialog_error_wrong_password">Wrong password or invalid PKCS#12 file</string>
+    <string name="client_certificate_dialog_error_invalid_p12_password">Invalid password or corrupted PKCS#12 file</string>
+    <string name="client_certificate_dialog_error_invalid_url">Invalid service URL</string>
+
+    <!-- Encrypt password dialog (EncryptPasswordFragment) -->
+    <string name="encrypt_password_dialog_title">Encryption password</string>
+    <string name="encrypt_password_dialog_description">Set a password to encrypt messages for this subscription. You can generate a random password or enter your own.</string>
+    <string name="encrypt_password_dialog_password_hint">Password</string>
+    <string name="encrypt_password_dialog_generate_button">Generate</string>
+    <string name="encrypt_password_dialog_copy_button">Copy</string>
+    <string name="encrypt_password_dialog_copy_label">Encryption password</string>
+    <string name="encrypt_password_dialog_copy_success">Password copied to clipboard</string>
+    <string name="encrypt_password_dialog_copy_empty">No password to copy</string>
+</resources>

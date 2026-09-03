@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/> <!-- For instant delivery foregrounds service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/> <!-- For instant delivery foregrounds service on SDK >= 34 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/> <!-- To keep foreground service awake; soon not needed anymore -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> <!-- To restart service on reboot -->
+    <uses-permission android:name="android.permission.VIBRATE"/> <!-- Incoming notifications should be able to vibrate the phone -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/> <!-- Only required on SDK <= 28 -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/> <!-- To reschedule the websocket retry -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/> <!-- As of Android 13, we need to ask for permission to post notifications -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/> <!-- Allows to ignore battery optimization without going to the settings -->
+
+    <!-- UnifiedPush "raise to foreground" requirement, see https://unifiedpush.org/developers/spec/android/#service-to-raise-to-the-foreground -->
+    <queries>
+        <intent>
+            <action android:name="org.unifiedpush.android.connector.RAISE_TO_FOREGROUND" />
+        </intent>
+    </queries>
+
+    <!-- Application -->
+    <application
+            android:name=".app.Application"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme"
+            android:networkSecurityConfig="@xml/network_security_config"
+            android:localeConfig="@xml/locales_config"
+            android:usesCleartextTraffic="true">
+
+        <!-- Main activity -->
+        <activity
+                android:name=".ui.MainActivity"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!-- Detail activity -->
+        <activity
+                android:name=".ui.DetailActivity"
+                android:parentActivityName=".ui.MainActivity"
+                android:windowSoftInputMode="adjustResize"
+                android:exported="true">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ui.MainActivity"/>
+
+            <!-- Open ntfy:// links with the app -->
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="ntfy" />
+            </intent-filter>
+        </activity>
+
+        <!-- Settings activity -->
+        <activity
+                android:name=".ui.SettingsActivity"
+                android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ui.MainActivity"/>
+        </activity>
+
+        <!-- Detail settings activity -->
+        <activity
+                android:name=".ui.DetailSettingsActivity"
+                android:parentActivityName=".ui.DetailActivity">
+        </activity>
+
+        <!-- Share file activity, incoming files/shares -->
+        <activity android:name=".ui.ShareActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="text/*" />
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="application/*" />
+            </intent-filter>
+        </activity>
+
+        <!-- Hack: Activity used for "view" action button with "clear=true" (to be able to cancel notifications and show a URL) -->
+        <activity
+                android:name=".msg.NotificationService$ViewActionWithClearActivity"
+                android:exported="false">
+        </activity>
+
+        <!-- UnifiedPush link activity to facilitate distributor selection, see https://unifiedpush.org/developers/spec/android/#link-activity -->
+        <activity android:name=".up.LinkActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="unifiedpush" android:host="link" />
+            </intent-filter>
+        </activity>
+
+        <!-- Subscriber foreground service for hosts other than ntfy.sh -->
+        <service
+            android:name=".service.SubscriberService"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="This is the main feature of this application. The foreground notification displays the connectivity status to the configurable remote server and the service notifies the user when a new message has been published on the remote server." />
+        </service>
+
+        <!-- Subscriber service restart on reboot -->
+        <receiver
+                android:name=".service.SubscriberService$BootStartReceiver"
+                android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- Subscriber service restart on destruction -->
+        <receiver
+                android:name=".service.SubscriberService$AutoRestartReceiver"
+                android:enabled="true"
+                android:exported="false"/>
+
+        <!-- Broadcast receiver to send messages via intents -->
+        <receiver
+                android:name=".msg.BroadcastService$BroadcastReceiver"
+                android:enabled="true"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="com.xiaogong.ntfy.im.SEND_MESSAGE"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- Broadcast receiver for UnifiedPush; must match https://github.com/UnifiedPush/UP-spec/blob/main/specifications.md -->
+        <receiver
+                android:name=".up.BroadcastReceiver"
+                android:enabled="true"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="org.unifiedpush.android.distributor.REGISTER"/>
+                <action android:name="org.unifiedpush.android.distributor.UNREGISTER"/>
+                <action android:name="org.unifiedpush.android.distributor.feature.BYTES_MESSAGE"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- Broadcast receiver for the "Download"/"Cancel" attachment action in the notification popup -->
+        <receiver
+                android:name=".msg.NotificationService$UserActionBroadcastReceiver"
+                android:enabled="true"
+                android:exported="false">
+        </receiver>
+
+        <!-- Broadcast receiver for when the notification is swiped away (currently only to cancel the insistent sound) -->
+        <receiver
+                android:name=".msg.NotificationService$DeleteBroadcastReceiver"
+                android:enabled="true"
+                android:exported="false">
+        </receiver>
+
+        <!-- Firebase messaging (note that this is empty in the F-Droid flavor) -->
+        <service
+                android:name=".firebase.FirebaseService"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <meta-data
+                android:name="firebase_analytics_collection_enabled"
+                android:value="false"/>
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/ic_notification"/>
+
+        <!-- FileProvider required for older Android versions (<= P), to allow passing the file URI in the open intent.
+             Avoids "exposed beyond app through Intent.getData" exception, see see https://stackoverflow.com/a/57288352/1440785 -->
+        <provider
+                android:name="androidx.core.content.FileProvider"
+                android:authorities="${applicationId}.provider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_paths"/>
+        </provider>
+    </application>
+</manifest>

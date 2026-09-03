@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context=".ui.DetailActivity"
+>
+    <include
+        android:id="@+id/app_bar_drawer"
+        layout="@layout/app_bar_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/detail_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/detail_activity_background"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            style="@style/CardViewBackground"
+            android:id="@+id/detail_notification_list_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/detail_message_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detail_notification_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:clipToPadding="false"
+                android:background="?android:attr/selectableItemBackground"
+                app:layoutManager="LinearLayoutManager"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/detail_no_notifications"
+            app:layout_constraintBottom_toTopOf="@id/detail_message_bar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" app:srcCompat="@drawable/ic_sms_gray_48dp"
+                android:id="@+id/detail_no_notifications_image"/>
+        <TextView
+                android:id="@+id/detail_no_notifications_text"
+                android:text="@string/detail_no_notifications_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:padding="10dp" android:gravity="center_horizontal"
+                android:paddingStart="50dp" android:paddingEnd="50dp"/>
+        <TextView
+                android:text="@string/detail_how_to_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_how_to_intro"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"/>
+        <TextView
+                android:text="@string/detail_how_to_example"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_how_to_example"
+                android:layout_marginTop="7dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"/>
+        <TextView
+                android:text="@string/detail_how_to_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_how_to_link"
+                android:layout_marginTop="7dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
+                android:linksClickable="true"
+                android:autoLink="web"/>
+    </LinearLayout>
+
+    <include
+        android:id="@+id/detail_message_bar"
+        layout="@layout/view_message_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/detail_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:contentDescription="@string/detail_fab_publish_description"
+            android:src="@drawable/ic_create_white_24dp"
+            android:visibility="gone"
+            app:layout_anchor="@id/detail_content_layout"
+            app:layout_anchorGravity="bottom|end"
+            style="@style/FloatingActionButton"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

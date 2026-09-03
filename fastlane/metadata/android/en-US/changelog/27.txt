@@ -1,0 +1,19 @@
+Features:
+* Per-subscription settings, custom subscription icons (#155, thanks to @mztiq for reporting)
+* Cards in notification detail view (#175, thanks to @cmeis for reporting)
+
+Bugs:
+* Accurate naming of "mute notifications" from "pause notifications" (#224, thanks to @shadow00 for reporting)
+* Make messages with links selectable (#226, thanks to @StoyanDimitrov for reporting)
+* Restoring topics or settings from backup doesn't work (#223, thanks to @shadow00 for reporting)
+* Fix app icon on old Android versions (#120, thanks to @shadow00 for reporting)
+* Fix races in UnifiedPush registration (#230, thanks to @Jakob for reporting)
+* Prevent view action from crashing the app (#233)
+* Prevent long topic names and icons from overlappng (#240, thanks to @cmeis)
+
+Additional translations:
+* Dutch (incomplete, thanks to @diony)
+
+Thank you:
+Many thanks to @cmeis, @StoyanDimitrov, @Fallenbagel for testing, and to @Joeharrison94 for the input.
+And thank you very much to all the translators for catching up so quickly.

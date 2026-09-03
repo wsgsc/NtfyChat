@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Strings in here are not translated by Hosted Weblate; it only looks at strings.xml.
+         The translatable="false" attribute is just an additional safety. -->
+
+    <!-- Main app constants -->
+    <string name="app_name" translatable="false">ntfy (Pro Edition)</string>
+    <string name="app_base_url" translatable="false">https://ntfy.sh</string> <!-- If changed, you must also change google-services.json! -->
+
+    <!-- Main activity -->
+    <string name="main_menu_report_bug_url" translatable="false">https://github.com/binwiederhier/ntfy/issues</string>
+    <string name="main_menu_docs_url" translatable="false">https://ntfy.sh/docs</string>
+    <string name="main_menu_donate_url" translatable="false">https://github.com/sponsors/binwiederhier</string>
+
+    <!-- Settings constants -->
+    <string name="settings_notifications_muted_until_key" translatable="false">MutedUntil</string>
+    <string name="settings_notifications_min_priority_key" translatable="false">MinPriority</string>
+    <string name="settings_notifications_channel_prefs_key" translatable="false">ChannelPrefs</string>
+    <string name="settings_notifications_auto_download_key" translatable="false">AutoDownload</string>
+    <string name="settings_notifications_auto_delete_key" translatable="false">AutoDelete</string>
+    <string name="settings_notifications_insistent_max_priority_key" translatable="false">InsistentMaxPriority</string>
+    <string name="settings_general_default_base_url_key" translatable="false">DefaultBaseURL</string>
+    <string name="settings_general_users_key" translatable="false">ManageUsers</string>
+    <string name="settings_general_dark_mode_key" translatable="false">DarkMode</string>
+    <string name="settings_general_language_key" translatable="false">Language</string>
+    <string name="settings_general_dynamic_colors_key" translatable="false">DynamicColors</string>
+    <string name="settings_general_message_bar_key" translatable="false">MessageBarEnabled</string>
+    <string name="settings_backup_restore_backup_key" translatable="false">Backup</string>
+    <string name="settings_backup_restore_restore_key" translatable="false">Restore</string>
+    <string name="settings_advanced_broadcast_key" translatable="false">BroadcastEnabled</string>
+    <string name="settings_advanced_unifiedpush_key" translatable="false">UnifiedPushEnabled</string>
+    <string name="settings_advanced_custom_headers_key" translatable="false">CustomHeaders</string>
+    <string name="settings_advanced_certificates_key" translatable="false">ManageCertificates</string>
+    <string name="settings_advanced_record_logs_key" translatable="false">RecordLogs</string>
+    <string name="settings_advanced_export_logs_key" translatable="false">ExportLogs</string>
+    <string name="settings_advanced_clear_logs_key" translatable="false">ClearLogs</string>
+    <string name="settings_advanced_connection_protocol_key" translatable="false">ConnectionProtocol</string>
+    <string name="settings_advanced_exact_alarms_key" translatable="false">ExactAlarms</string>
+    <string name="settings_about_version_key" translatable="false">Version</string>
+
+    <!-- Detail settings constants -->
+    <string name="detail_settings_notifications_header_key" translatable="false">SubscriptionNotifications</string>
+    <string name="detail_settings_notifications_instant_key" translatable="false">SubscriptionInstant</string>
+    <string name="detail_settings_notifications_muted_until_key" translatable="false">SubscriptionMutedUntil</string>
+    <string name="detail_settings_notifications_dedicated_channels_key" translatable="false">SubscriptionDedicatedChannels</string>
+    <string name="detail_settings_notifications_open_channels_key" translatable="false">SubscriptionOpenChannels</string>
+    <string name="detail_settings_notifications_min_priority_key" translatable="false">SubscriptionMinPriority</string>
+    <string name="detail_settings_notifications_auto_delete_key" translatable="false">SubscriptionAutoDelete</string>
+    <string name="detail_settings_notifications_insistent_max_priority_key" translatable="false">SubscriptionInsistentMaxPriority</string>
+    <string name="detail_settings_appearance_header_key" translatable="false">SubscriptionAppearance</string>
+    <string name="detail_settings_appearance_icon_set_key" translatable="false">SubscriptionIconSet</string>
+    <string name="detail_settings_appearance_icon_remove_key" translatable="false">SubscriptionIconRemove</string>
+    <string name="detail_settings_appearance_display_name_key" translatable="false">SubscriptionDisplayName</string>
+    <string name="detail_settings_encryption_header_key" translatable="false">SubscriptionEncryption</string>
+    <string name="detail_settings_encryption_enabled_key" translatable="false">SubscriptionEncryptionEnabled</string>
+    <string name="detail_settings_appearance_username_key" translatable="false">SubscriptionUsername</string>
+    <string name="detail_settings_appearance_encrypt_password_key" translatable="false">SubscriptionEncryptPassword</string>
+    <string name="detail_settings_about_header_key" translatable="false">SubscriptionAbout</string>
+    <string name="detail_settings_about_topic_url_key" translatable="false">SubscriptionTopicURL</string>
+
+    <!-- Main settings -->
+    <string-array name="settings_notifications_muted_until_entries">
+        <item>@string/notification_dialog_show_all</item>
+        <item>@string/notification_dialog_30min</item>
+        <item>@string/notification_dialog_1h</item>
+        <item>@string/notification_dialog_2h</item>
+        <item>@string/notification_dialog_8h</item>
+        <item>@string/notification_dialog_tomorrow</item>
+        <item>@string/notification_dialog_forever</item>
+    </string-array>
+    <string-array name="settings_notifications_muted_until_values">
+        <item>0</item> <!-- See Repository -->
+        <item>30</item> <!-- See Minutes -->
+        <item>60</item>
+        <item>120</item>
+        <item>480</item>
+        <item>2</item> <!-- See Repository -->
+        <item>1</item> <!-- See Repository -->
+    </string-array>
+    <string-array name="settings_notifications_min_priority_entries">
+        <item>@string/settings_notifications_min_priority_min</item>
+        <item>@string/settings_notifications_min_priority_low</item>
+        <item>@string/settings_notifications_min_priority_default</item>
+        <item>@string/settings_notifications_min_priority_high</item>
+        <item>@string/settings_notifications_min_priority_max</item>
+    </string-array>
+    <string-array name="settings_notifications_min_priority_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_min_priority_entries">
+        <item>@string/detail_settings_global_setting_title</item>
+        <item>@string/settings_notifications_min_priority_min</item>
+        <item>@string/settings_notifications_min_priority_low</item>
+        <item>@string/settings_notifications_min_priority_default</item>
+        <item>@string/settings_notifications_min_priority_high</item>
+        <item>@string/settings_notifications_min_priority_max</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_min_priority_values">
+        <item>0</item> <!-- Same as Repository.MIN_PRIORITY_USE_GLOBAL -->
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+    <string-array name="settings_notifications_auto_download_entries">
+        <item>@string/settings_notifications_auto_download_never</item>
+        <item>@string/settings_notifications_auto_download_always</item>
+        <item>@string/settings_notifications_auto_download_100k</item>
+        <item>@string/settings_notifications_auto_download_500k</item>
+        <item>@string/settings_notifications_auto_download_1m</item>
+        <item>@string/settings_notifications_auto_download_5m</item>
+        <item>@string/settings_notifications_auto_download_10m</item>
+        <item>@string/settings_notifications_auto_download_50m</item>
+    </string-array>
+    <string-array name="settings_notifications_auto_download_values">
+        <item>0</item>
+        <item>1</item>
+        <item>102400</item>
+        <item>512000</item>
+        <item>1048576</item>
+        <item>5242880</item>
+        <item>10485760</item>
+        <item>52428800</item>
+    </string-array>
+    <string-array name="settings_notifications_auto_delete_entries">
+        <item>@string/settings_notifications_auto_delete_never</item>
+        <item>@string/settings_notifications_auto_delete_one_day</item>
+        <item>@string/settings_notifications_auto_delete_three_days</item>
+        <item>@string/settings_notifications_auto_delete_one_week</item>
+        <item>@string/settings_notifications_auto_delete_one_month</item>
+        <item>@string/settings_notifications_auto_delete_three_months</item>
+    </string-array>
+    <string-array name="settings_notifications_auto_delete_values">
+        <item>0</item>
+        <item>86400</item>
+        <item>259200</item>
+        <item>604800</item>
+        <item>2592000</item>
+        <item>7776000</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_auto_delete_entries">
+        <item>@string/detail_settings_global_setting_title</item>
+        <item>@string/settings_notifications_auto_delete_never</item>
+        <item>@string/settings_notifications_auto_delete_one_day</item>
+        <item>@string/settings_notifications_auto_delete_three_days</item>
+        <item>@string/settings_notifications_auto_delete_one_week</item>
+        <item>@string/settings_notifications_auto_delete_one_month</item>
+        <item>@string/settings_notifications_auto_delete_three_months</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_auto_delete_values">
+        <item>-1</item> <!-- Same as Repository.AUTO_DELETE_USE_GLOBAL -->
+        <item>0</item>
+        <item>86400</item>
+        <item>259200</item>
+        <item>604800</item>
+        <item>2592000</item>
+        <item>7776000</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_insistent_max_priority_entries">
+        <item>@string/detail_settings_global_setting_title</item>
+        <item>@string/detail_settings_notifications_insistent_max_priority_list_item_enabled</item>
+        <item>@string/detail_settings_notifications_insistent_max_priority_list_item_disabled</item>
+    </string-array>
+    <string-array name="detail_settings_notifications_insistent_max_priority_values">
+        <item>-1</item> <!-- Same as Repository.INSISTENT_MAX_PRIORITY_USE_GLOBAL -->
+        <item>1</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="settings_advanced_connection_protocol_entries">
+        <item>@string/settings_advanced_connection_protocol_entry_jsonhttp</item>
+        <item>@string/settings_advanced_connection_protocol_entry_ws</item>
+    </string-array>
+    <string-array name="settings_advanced_connection_protocol_values">
+        <item>jsonhttp</item>
+        <item>ws</item>
+    </string-array>
+    <string-array name="settings_advanced_export_logs_entries">
+        <item>@string/settings_advanced_export_logs_entry_copy_original</item>
+        <item>@string/settings_advanced_export_logs_entry_copy_scrubbed</item>
+        <item>@string/settings_advanced_export_logs_entry_upload_original</item>
+        <item>@string/settings_advanced_export_logs_entry_upload_scrubbed</item>
+    </string-array>
+    <string-array name="settings_advanced_export_logs_values">
+        <item>copy_original</item>
+        <item>copy_scrubbed</item>
+        <item>upload_original</item>
+        <item>upload_scrubbed</item>
+    </string-array>
+    <string-array name="settings_backup_restore_backup_entries">
+        <item>@string/settings_backup_restore_backup_entry_everything</item>
+        <item>@string/settings_backup_restore_backup_entry_everything_no_users</item>
+        <item>@string/settings_backup_restore_backup_entry_settings_only</item>
+    </string-array>
+    <string-array name="settings_backup_restore_backup_values">
+        <item>everything</item>
+        <item>everything_no_users</item>
+        <item>settings_only</item>
+    </string-array>
+    <string-array name="settings_general_dark_mode_entries">
+        <item>@string/settings_general_dark_mode_entry_system</item>
+        <item>@string/settings_general_dark_mode_entry_light</item>
+        <item>@string/settings_general_dark_mode_entry_dark</item>
+    </string-array>
+    <string-array name="settings_general_dark_mode_values">
+        <!-- Must match values in AppCompatDelegate -->
+        <item>-1</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+</resources>

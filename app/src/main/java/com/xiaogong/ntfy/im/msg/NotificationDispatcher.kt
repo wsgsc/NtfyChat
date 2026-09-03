@@ -1,0 +1,119 @@
+package com.xiaogong.ntfy.im.msg
+
+import android.content.Context
+import com.xiaogong.ntfy.im.db.Notification
+import com.xiaogong.ntfy.im.db.Repository
+import com.xiaogong.ntfy.im.db.Subscription
+import com.xiaogong.ntfy.im.up.Distributor
+import com.xiaogong.ntfy.im.util.Log
+import com.xiaogong.ntfy.im.util.decodeBytesMessage
+import com.xiaogong.ntfy.im.util.safeLet
+
+/**
+ * The notification dispatcher figures out what to do with a notification.
+ * It may display a notification, send out a broadcast, or forward via UnifiedPush.
+ */
+class NotificationDispatcher(val context: Context, val repository: Repository) {
+    private val notifier = NotificationService(context)
+    private val broadcaster = BroadcastService(context)
+    private val distributor = Distributor(context)
+
+    fun init() {
+        notifier.createDefaultNotificationChannels()
+    }
+
+    fun dispatch(subscription: Subscription, notification: Notification) {
+        Log.d(TAG, "Dispatching $notification for subscription $subscription")
+
+        val cancel = shouldCancel(notification)
+        val muted = getMuted(subscription)
+        val notify = shouldNotify(subscription, notification, muted)
+        val broadcast = shouldBroadcast(subscription, notification)
+        val distribute = shouldDistribute(subscription, notification)
+        val downloadAttachment = shouldDownloadAttachment(notification)
+        val downloadIcon = shouldDownloadIcon(notification)
+        if (cancel) {
+            notifier.cancel(notification.notificationId)
+        } else if (notify) {
+            notifier.display(subscription, notification)
+        }
+        if (broadcast) {
+            broadcaster.sendMessage(subscription, notification, muted)
+        }
+        if (distribute) {
+            safeLet(subscription.upAppId, subscription.upConnectorToken) { appId, connectorToken ->
+                distributor.sendMessage(appId, connectorToken, decodeBytesMessage(notification))
+            }
+        }
+        if (downloadAttachment && downloadIcon) {
+            DownloadManager.enqueue(context, notification.id, userAction = false, type = DownloadType.BOTH)
+        } else if (downloadAttachment) {
+            DownloadManager.enqueue(context, notification.id, userAction = false, type = DownloadType.ATTACHMENT)
+        } else if (downloadIcon) {
+            DownloadManager.enqueue(context, notification.id, userAction = false, type = DownloadType.ICON)
+        }
+    }
+
+    private fun shouldDownloadAttachment(notification: Notification): Boolean {
+        if (notification.attachment == null || notification.event != ApiService.EVENT_MESSAGE) {
+            return false
+        }
+        val attachment = notification.attachment
+        if (attachment.expires != null && attachment.expires < System.currentTimeMillis()/1000) {
+            Log.d(TAG, "Attachment already expired at ${attachment.expires}, not downloading")
+            return false
+        }
+        when (val maxAutoDownloadSize = repository.getAutoDownloadMaxSize()) {
+            Repository.AUTO_DOWNLOAD_ALWAYS -> return true
+            Repository.AUTO_DOWNLOAD_NEVER -> return false
+            else -> {
+                if (attachment.size == null) {
+                    return true // DownloadWorker will bail out if attachment is too large!
+                }
+                return attachment.size <= maxAutoDownloadSize
+            }
+        }
+    }
+    private fun shouldDownloadIcon(notification: Notification): Boolean {
+        return notification.icon?.hasValidUrl() == true && notification.event == ApiService.EVENT_MESSAGE
+    }
+
+    private fun shouldCancel(notification: Notification): Boolean {
+        return notification.event == ApiService.EVENT_MESSAGE_CLEAR || notification.event == ApiService.EVENT_MESSAGE_DELETE
+    }
+
+    private fun shouldNotify(subscription: Subscription, notification: Notification, muted: Boolean): Boolean {
+        if (subscription.upAppId != null || notification.event != ApiService.EVENT_MESSAGE) {
+            return false
+        }
+        val priority = if (notification.priority > 0) notification.priority else 3
+        val minPriority = if (subscription.minPriority > 0) subscription.minPriority else repository.getMinPriority()
+        if (priority < minPriority) {
+            return false
+        }
+        val detailsVisible = repository.detailViewSubscriptionId.get() == notification.subscriptionId
+        return !detailsVisible && !muted
+    }
+
+    private fun shouldBroadcast(subscription: Subscription, notification: Notification): Boolean {
+        if (subscription.upAppId != null || notification.event != ApiService.EVENT_MESSAGE) { // Never broadcast for UnifiedPush subscriptions
+            return false
+        }
+        return repository.getBroadcastEnabled()
+    }
+
+    private fun shouldDistribute(subscription: Subscription, notification: Notification): Boolean {
+        return subscription.upAppId != null && notification.event == ApiService.EVENT_MESSAGE // Only distribute for UnifiedPush subscriptions
+    }
+
+    private fun getMuted(subscription: Subscription): Boolean {
+        if (repository.isGlobalMuted()) {
+            return true
+        }
+        return subscription.mutedUntil == 1L || (subscription.mutedUntil > 1L && subscription.mutedUntil > System.currentTimeMillis()/1000)
+    }
+
+    companion object {
+        private const val TAG = "NtfyNotifDispatch"
+    }
+}

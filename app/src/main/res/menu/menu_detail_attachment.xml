@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/detail_item_menu_download" android:title="@string/detail_item_menu_download"/>
+    <item android:id="@+id/detail_item_menu_cancel" android:title="@string/detail_item_menu_cancel"/>
+    <item android:id="@+id/detail_item_menu_open" android:title="@string/detail_item_menu_open"/>
+    <item android:id="@+id/detail_item_menu_delete" android:title="@string/detail_item_menu_delete"/>
+    <item android:id="@+id/detail_item_menu_save_file" android:title="@string/detail_item_menu_save_file"/>
+    <item android:id="@+id/detail_item_menu_copy_url" android:title="@string/detail_item_menu_copy_url"/>
+    <item android:id="@+id/detail_item_menu_copy_contents" android:title="@string/detail_item_menu_copy_contents"/>
+</menu>

@@ -1,0 +1,28 @@
+Features:
+* Download attachments to cache folder (#181)
+* Regularly delete attachments for deleted notifications (#142)
+* Translations to different languages (#188, thanks to @StoyanDimitrov for initiating things)
+
+Bugs:
+* IllegalStateException: Failed to build unique file (#177, thanks to @Fallenbagel for reporting)
+* SQLiteConstraintException: Crash during UP registration (#185)
+* Refresh preferences screen after settings import (#183, thanks to @cmeis for reporting)
+* Add priority strings to strings.xml to make it translatable (#192, thanks to @StoyanDimitrov)
+
+Translations:
+* English language improvements (thanks to @comradekingu)
+* Bulgarian (thanks to @StoyanDimitrov)
+* Chinese/Simplified (thanks to @poi and @PeterCxy)
+* Dutch (incomplete, thanks to @diony)
+* French (thanks to @Kusoneko and @mlcsthor)
+* German (thanks to @cmeis)
+* Italian (thanks to @theTranslator)
+* Indonesian (thanks to @linerly)
+* Norwegian (incomplete, thanks to @comradekingu)
+* Portuguese/Brazil (thanks to @LW)
+* Spanish (thanks to @rogeliodh)
+* Turkish (thanks to @ersen)
+
+Thanks:
+* Many thanks to @cmeis, @Fallenbagel, @J117 and @rogeliodh for input on the new attachment logic, and for
+  testing the release

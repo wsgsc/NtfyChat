@@ -1,0 +1,21 @@
+Features:
+* Custom notification action buttons (#134, thanks to @mrherman for reporting)
+* Support for ntfy:// deep links (#20, thanks to @Copephobia for reporting)
+* Fastlane metadata can now be translated too (#198, thanks to @StoyanDimitrov for reporting)
+* Channel settings option to configure DND override, sounds, etc. (#91)
+
+Bugs:
+* Validate URLs when changing default server and server in user management (#193, thanks to @StoyanDimitrov for reporting)
+* Error in sending test notification in different languages (#209, thanks to @StoyanDimitrov for reporting)
+* "[x] Instant delivery in doze mode" checkbox does not work properly (#211)
+* Disallow "http" GET/HEAD actions with body (#221, thanks to @cmeis for reporting)
+* Action "view" with "clear=true" does not work on some phones (#220, thanks to @cmeis for reporting)
+* Do not group foreground service notification with others (#219, thanks to @s-h-a-r-d for reporting)
+
+Additional translations:
+* Czech (thanks to @waclaw66)
+* Japanese (thanks to @shak)
+* Russian (thanks to @flamey and @ilya.mikheev.coder)
+
+Thanks for testing:
+* Thanks to @s-h-a-r-d (aka @Shard), @cmeis, @poblabs, and everyone I forgot for testing.
