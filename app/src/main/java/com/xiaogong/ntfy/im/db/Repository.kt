@@ -25,6 +25,7 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
     private val trustedCertificateDao = database.trustedCertificateDao()
     private val clientCertificateDao = database.clientCertificateDao()
     private val customHeaderDao = database.customHeaderDao()
+    private val userProfileDao = database.userProfileDao()
 
     private val connectionDetails = ConcurrentHashMap<String, ConnectionDetails>()
     private val connectionDetailsLiveData = MutableLiveData<Map<String, ConnectionDetails>>(connectionDetails)
@@ -596,8 +597,36 @@ class Repository(private val sharedPrefs: SharedPreferences, database: Database)
         Log.d(TAG, "Connection force reconnect version incremented for $baseUrl: ${connectionForceReconnectVersions[baseUrl]}")
     }
 
+    // User Profile methods
+    suspend fun getUserProfile(): UserProfile? {
+        return userProfileDao.get()
+    }
+
+    suspend fun saveUserProfile(profile: UserProfile) {
+        userProfileDao.insert(profile)
+    }
+
+    suspend fun updateUserProfile(profile: UserProfile) {
+        userProfileDao.update(profile)
+    }
+
+    suspend fun deleteUserProfile() {
+        userProfileDao.delete()
+    }
+
+    fun isFirstLaunch(): Boolean {
+        return sharedPrefs.getBoolean(SHARED_PREFS_FIRST_LAUNCH, true)
+    }
+
+    fun setFirstLaunchComplete() {
+        sharedPrefs.edit {
+            putBoolean(SHARED_PREFS_FIRST_LAUNCH, false)
+        }
+    }
+
     companion object {
         const val SHARED_PREFS_ID = "MainPreferences"
+        const val SHARED_PREFS_FIRST_LAUNCH = "FirstLaunch"
         const val SHARED_PREFS_POLL_WORKER_VERSION = "PollWorkerVersion"
         const val SHARED_PREFS_DELETE_WORKER_VERSION = "DeleteWorkerVersion"
         const val SHARED_PREFS_AUTO_RESTART_WORKER_VERSION = "AutoRestartWorkerVersion"

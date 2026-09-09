@@ -39,7 +39,11 @@
     <string name="add_dialog_button_cancel">取消</string>
     <string name="add_dialog_button_subscribe">订阅</string>
     <string name="add_dialog_button_back">返回</string>
+    <string name="add_dialog_button_done">完成</string>
     <string name="add_dialog_button_login">登录</string>
+    <string name="add_dialog_encrypt_title">设置加密（可选）</string>
+    <string name="add_dialog_encrypt_description">可选：为此主题设置消息加密密码。你可以生成随机密码或输入自己的密码，也可以直接点击完成跳过此步骤。</string>
+    <string name="add_dialog_encrypt_password_hint">加密密码（可选）</string>
     <string name="add_dialog_error_connection_failed">连接失败：%1$s</string>
     <string name="add_dialog_login_title">需要登录</string>
     <string name="add_dialog_login_description">此主题需要您登录。请输入用户名和密码。</string>
@@ -319,14 +323,6 @@
     <string name="detail_settings_appearance_display_name_message">为这个订阅设置一个自定义的显示名。若留空将使用默认值（%1$s）。</string>
     <string name="main_banner_websocket_text">切换到 WebSockets 是连接到你服务器的推荐方式，可能改善电池寿命但或许需要<a href="https://ntfy.sh/docs/config/#nginxapache2caddy">你对代理进行额外配置</a>。可在“设置”中开关此选项。</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s （默认）</string>
-    <string name="detail_settings_encryption_header">加密选项</string>
-    <string name="detail_settings_encryption_enabled_title">启用加密</string>
-    <string name="detail_settings_encryption_enabled_summary">为本次订阅加密所有消息</string>
-    <string name="detail_settings_appearance_username_title">用户名</string>
-    <string name="detail_settings_appearance_username_summary">为此次订阅设置用户名</string>
-    <string name="detail_settings_appearance_encrypt_password_title">加密密码</string>
-    <string name="detail_settings_appearance_encrypt_password_summary">为此次订阅设置加密密码</string>
-
     <string name="add_dialog_base_urls_dropdown_clear">清除服务 URL</string>
     <string name="main_banner_websocket_button_enable_now">马上开启</string>
     <string name="detail_settings_about_header">关于</string>
@@ -395,6 +391,7 @@
     <string name="message_bar_hint">在此输入一则消息</string>
     <string name="message_bar_publish_button_description">发布消息</string>
     <string name="message_bar_expand_button_description">更多选项</string>
+    <string name="message_bar_encrypt_icon_description">加密已启用</string>
     <string name="detail_fab_publish_description">发布通知</string>
     <string name="settings_general_language_title">语言</string>
     <string name="settings_general_language_summary_system">使用系统默认</string>
@@ -466,9 +463,6 @@
     <string name="client_certificate_dialog_title_add">添加客户端证书</string>
     <string name="client_certificate_dialog_description_page1">输入使用该证书的服务 URL，以及 PKCS#12 文件的密码。</string>
     <string name="client_certificate_dialog_description_page2">查看证书详情并保存来添加该客户端证书。该证书会被用于服务器身份认证。</string>
-    <string name="encrypt_password_dialog_title">加密密码</string>
-    <string name="encrypt_password_dialog_description">为此订阅设置加密消息的密码。你可以生成随机密码或输入自己的密码。</string>
-    <string name="encrypt_password_dialog_password_hint">密码</string>
     <string name="encrypt_password_dialog_generate_button">生成</string>
     <string name="encrypt_password_dialog_copy_button">复制</string>
     <string name="encrypt_password_dialog_copy_label">加密密码</string>
@@ -483,4 +477,31 @@
     <string name="connection_error_dialog_retry_now">立即重试</string>
     <string name="connection_error_dialog_retry_countdown">%1$d 后重试…</string>
     <string name="connection_error_dialog_retrying">重试中…</string>
+
+    <!-- Welcome activity -->
+    <string name="welcome_title">欢迎使用 NtfyChat</string>
+    <string name="welcome_subtitle">设置你的个人资料以开始使用</string>
+    <string name="welcome_avatar_description">用户头像</string>
+    <string name="welcome_select_avatar">选择头像</string>
+    <string name="welcome_username_hint">用户名</string>
+    <string name="welcome_username_required">请输入用户名</string>
+    <string name="welcome_complete">完成</string>
+    <string name="welcome_saving">保存中…</string>
+    <string name="welcome_save_error">保存失败</string>
+    <string name="welcome_permission_denied">权限被拒绝，无法选择图片</string>
+
+    <!-- Bottom navigation -->
+    <string name="bottom_nav_chat_rooms">聊天室</string>
+    <string name="bottom_nav_profile">我</string>
+
+    <!-- Profile fragment -->
+    <string name="profile_username_placeholder">用户名</string>
+    <string name="profile_tap_to_edit">点击编辑资料</string>
+    <string name="profile_edit">编辑</string>
+    <string name="profile_settings_section">设置</string>
+    <string name="profile_item_settings">设置</string>
+    <string name="profile_item_about">关于</string>
+    <string name="profile_item_help">帮助与文档</string>
+    <string name="profile_version">版本 %1$s</string>
+
 </resources>

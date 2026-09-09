@@ -28,9 +28,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.doOnLayout
 import androidx.core.view.updatePadding
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -93,6 +92,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     private lateinit var mainListContainer: SwipeRefreshLayout
     private lateinit var adapter: MainAdapter
     private lateinit var fab: FloatingActionButton
+    private var selectedBottomNavigationItemId = View.NO_ID
 
     // Other stuff
     private var workManager: WorkManager? = null // Context-dependent
@@ -131,6 +131,14 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        // Check if first launch
+        if (repository.isFirstLaunch()) {
+            startActivity(Intent(this, WelcomeActivity::class.java))
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_main)
 
         Log.init(this) // Init logs in all entry points
@@ -166,15 +174,6 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             onSubscribeButtonClick()
         }
         
-        // Add bottom padding to FAB to account for navigation bar
-        ViewCompat.setOnApplyWindowInsetsListener(fab) { view, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val layoutParams = view.layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
-            layoutParams.bottomMargin = systemBars.bottom
-            view.layoutParams = layoutParams
-            insets
-        }
-
         // Swipe to refresh
         mainListContainer = findViewById(R.id.main_subscriptions_list_container)
         mainListContainer.setOnRefreshListener { refreshAllSubscriptions() }
@@ -197,13 +196,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         )
         mainList.adapter = adapter
         
-        // Apply window insets to ensure content is not covered by navigation bar
         mainList.clipToPadding = false
-        ViewCompat.setOnApplyWindowInsetsListener(mainList) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.updatePadding(bottom = systemBars.bottom)
-            insets
-        }
 
         viewModel.list().observe(this) {
             it?.let { subscriptions ->
@@ -362,6 +355,84 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
 
         // Permissions
         maybeRequestNotificationPermission()
+
+        setupBottomNavigation(savedInstanceState)
+    }
+
+    private fun setupBottomNavigation(savedInstanceState: Bundle?) {
+        val bottomNav = findViewById<View>(R.id.bottom_navigation)
+        val chatRoomsItem = findViewById<View>(R.id.navigation_chat_rooms)
+        val profileItem = findViewById<View>(R.id.navigation_profile)
+        val subscriptionListContainer = findViewById<View>(R.id.subscription_list_container)
+        val fragmentContainer = findViewById<View>(R.id.fragment_container)
+
+        bottomNav.doOnLayout { navigationView ->
+            val bottomNavHeight = navigationView.height
+            subscriptionListContainer.updatePadding(bottom = bottomNavHeight)
+            fragmentContainer.updatePadding(bottom = bottomNavHeight)
+        }
+
+        chatRoomsItem.setOnClickListener {
+            selectBottomNavigationItem(R.id.navigation_chat_rooms)
+        }
+        profileItem.setOnClickListener {
+            selectBottomNavigationItem(R.id.navigation_profile)
+        }
+
+        val selectedItemId = savedInstanceState?.getInt(
+            STATE_BOTTOM_NAVIGATION_ITEM,
+            R.id.navigation_chat_rooms
+        ) ?: R.id.navigation_chat_rooms
+        selectBottomNavigationItem(selectedItemId)
+    }
+
+    private fun selectBottomNavigationItem(itemId: Int) {
+        val selectedItemId = if (itemId == R.id.navigation_profile) {
+            R.id.navigation_profile
+        } else {
+            R.id.navigation_chat_rooms
+        }
+        if (selectedItemId == selectedBottomNavigationItemId) {
+            return
+        }
+
+        selectedBottomNavigationItemId = selectedItemId
+        val chatRoomsSelected = selectedItemId == R.id.navigation_chat_rooms
+
+        findViewById<View>(R.id.navigation_chat_rooms).isSelected = chatRoomsSelected
+        findViewById<View>(R.id.navigation_profile).isSelected = !chatRoomsSelected
+        findViewById<View>(R.id.subscription_list_container).visibility =
+            if (chatRoomsSelected) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.fragment_container).visibility =
+            if (chatRoomsSelected) View.GONE else View.VISIBLE
+        updateFabVisibility()
+
+        if (chatRoomsSelected) {
+            title = getString(R.string.bottom_nav_chat_rooms)
+        } else {
+            title = getString(R.string.bottom_nav_profile)
+            showProfileFragment()
+        }
+    }
+
+    private fun updateFabVisibility() {
+        fab.visibility = if (
+            selectedBottomNavigationItemId == R.id.navigation_chat_rooms && actionMode == null
+        ) View.VISIBLE else View.GONE
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(STATE_BOTTOM_NAVIGATION_ITEM, selectedBottomNavigationItemId)
+        super.onSaveInstanceState(outState)
+    }
+
+    private fun showProfileFragment() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        if (fragment !is ProfileFragment) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ProfileFragment.newInstance())
+                .commit()
+        }
     }
 
     private fun maybeRequestNotificationPermission() {
@@ -536,14 +607,6 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         }
         val mutedUntilSeconds = repository.getGlobalMutedUntil()
         runOnUiThread {
-            // Show/hide menu items based on build config
-            val rateAppItem = menu.findItem(R.id.main_menu_rate)
-            val docsItem = menu.findItem(R.id.main_menu_docs)
-            val reportBugItem = menu.findItem(R.id.main_menu_report_bug)
-            rateAppItem.isVisible = BuildConfig.RATE_APP_AVAILABLE
-            docsItem.isVisible = BuildConfig.PAYMENT_LINKS_AVAILABLE // Google Payments Policy, see https://github.com/binwiederhier/ntfy/issues/1463
-            reportBugItem.isVisible = BuildConfig.PAYMENT_LINKS_AVAILABLE // Google Payments Policy, see https://github.com/binwiederhier/ntfy/issues/1463
-
             // Pause notification icons
             val notificationsEnabledItem = menu.findItem(R.id.main_menu_notifications_enabled)
             val notificationsDisabledUntilItem = menu.findItem(R.id.main_menu_notifications_disabled_until)
@@ -585,34 +648,6 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             }
             R.id.main_menu_connection_error -> {
                 onConnectionErrorClick()
-                true
-            }
-            R.id.main_menu_settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
-                true
-            }
-            R.id.main_menu_report_bug -> {
-                startActivity(
-                    Intent(Intent.ACTION_VIEW, getString(R.string.main_menu_report_bug_url).toUri())
-                )
-                true
-            }
-            R.id.main_menu_rate -> {
-                try {
-                    startActivity(
-                        Intent(Intent.ACTION_VIEW, "market://details?id=$packageName".toUri())
-                    )
-                } catch (_: ActivityNotFoundException) {
-                    startActivity(
-                        Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/details?id=$packageName".toUri())
-                    )
-                }
-                true
-            }
-            R.id.main_menu_docs -> {
-                startActivity(
-                    Intent(Intent.ACTION_VIEW, getString(R.string.main_menu_docs_url).toUri())
-                )
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -657,7 +692,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         newFragment.show(supportFragmentManager, AddFragment.TAG)
     }
 
-    override fun onSubscribe(topic: String, baseUrl: String, instant: Boolean) {
+    override fun onSubscribe(topic: String, baseUrl: String, instant: Boolean, encryptPassword: String?) {
         Log.d(TAG, "Adding subscription ${topicShortUrl(baseUrl, topic)} (instant = $instant)")
 
         // Add subscription to database
@@ -676,9 +711,9 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             upAppId = null,
             upConnectorToken = null,
             displayName = null,
-            encryptionEnabled = false,
+            encryptionEnabled = encryptPassword != null,
             username = null,
-            encryptPassword = null,
+            encryptPassword = encryptPassword,
             totalCount = 0,
             newCount = 0,
             lastActive = Date().time/1000
@@ -832,8 +867,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     }
 
     private fun finishActionMode() {
-        actionMode!!.finish()
-        endActionModeAndRedraw()
+        actionMode?.finish()
     }
 
     private fun endActionModeAndRedraw() {
@@ -841,18 +875,23 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         adapter.selected.clear()
         redrawList()
 
-        // Fade in FAB
-        fab.alpha = 0f
-        fab.visibility = View.VISIBLE
-        fab
-            .animate()
-            .alpha(1f)
-            .setDuration(ANIMATION_DURATION)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    fab.visibility = View.VISIBLE // Required to replace the old listener
-                }
-            })
+        fab.animate().cancel()
+        if (selectedBottomNavigationItemId == R.id.navigation_chat_rooms) {
+            fab.alpha = 0f
+            fab.visibility = View.VISIBLE
+            fab
+                .animate()
+                .alpha(1f)
+                .setDuration(ANIMATION_DURATION)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        updateFabVisibility()
+                    }
+                })
+        } else {
+            fab.alpha = 1f
+            updateFabVisibility()
+        }
     }
 
     private fun redrawList() {
@@ -870,6 +909,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         const val EXTRA_SUBSCRIPTION_DISPLAY_NAME = "subscriptionDisplayName"
         const val EXTRA_SUBSCRIPTION_INSTANT = "subscriptionInstant"
         const val EXTRA_SUBSCRIPTION_MUTED_UNTIL = "subscriptionMutedUntil"
+        const val STATE_BOTTOM_NAVIGATION_ITEM = "bottomNavigationItem"
         const val ANIMATION_DURATION = 80L
         const val ONE_DAY_MILLIS = 86400000L
 

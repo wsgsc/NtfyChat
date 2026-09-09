@@ -40,6 +40,16 @@
                 app:tint="?attr/colorOutline"
                 android:layout_marginStart="4dp"/>
 
+            <ImageView
+                android:id="@+id/message_bar_encrypt_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_lock_gray_24dp"
+                android:contentDescription="@string/message_bar_encrypt_icon_description"
+                app:tint="?attr/colorOutline"
+                android:layout_marginStart="2dp"
+                android:visibility="gone"/>
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/message_bar_text"
                 android:layout_width="0dp"

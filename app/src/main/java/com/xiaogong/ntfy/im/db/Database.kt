@@ -310,8 +310,16 @@ data class LogEntry(
             this(0, timestamp, tag, level, message, exception)
 }
 
+@Entity(tableName = "UserProfile")
+data class UserProfile(
+    @PrimaryKey val id: Long = 1, // Fixed ID for single user profile
+    @ColumnInfo(name = "username") val username: String,
+    @ColumnInfo(name = "avatarPath") val avatarPath: String?,
+    @ColumnInfo(name = "createdAt") val createdAt: Long
+)
+
 @androidx.room.Database(
-    version = 21,
+    version = 22,
     entities = [
         Subscription::class,
         Notification::class,
@@ -319,7 +327,8 @@ data class LogEntry(
         LogEntry::class,
         CustomHeader::class,
         TrustedCertificate::class,
-        ClientCertificate::class
+        ClientCertificate::class,
+        UserProfile::class
    ]
 )
 @TypeConverters(Converters::class)
@@ -331,6 +340,7 @@ abstract class Database : RoomDatabase() {
     abstract fun logDao(): LogDao
     abstract fun trustedCertificateDao(): TrustedCertificateDao
     abstract fun clientCertificateDao(): ClientCertificateDao
+    abstract fun userProfileDao(): UserProfileDao
 
     companion object {
         @Volatile
@@ -360,6 +370,7 @@ abstract class Database : RoomDatabase() {
                     .addMigrations(MIGRATION_18_19)
                     .addMigrations(MIGRATION_19_20)
                     .addMigrations(MIGRATION_20_21)
+                    .addMigrations(MIGRATION_21_22)
                     .fallbackToDestructiveMigration(true)
                     .build()
                 this.instance = instance
@@ -519,6 +530,12 @@ abstract class Database : RoomDatabase() {
                 db.execSQL("ALTER TABLE Subscription ADD COLUMN encryptionEnabled INTEGER NOT NULL DEFAULT 0")
             }
         }
+
+        private val MIGRATION_21_22 = object : Migration(21, 22) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE IF NOT EXISTS UserProfile (id INTEGER NOT NULL, username TEXT NOT NULL, avatarPath TEXT, createdAt INTEGER NOT NULL, PRIMARY KEY(id))")
+            }
+        }
     }
 }
 
@@ -607,7 +624,7 @@ interface NotificationDao {
     @Query("SELECT * FROM notification")
     suspend fun list(): List<Notification>
 
-    @Query("SELECT * FROM notification WHERE subscriptionId = :subscriptionId AND deleted != 1 ORDER BY timestamp DESC")
+    @Query("SELECT * FROM notification WHERE subscriptionId = :subscriptionId AND deleted != 1 ORDER BY timestamp ASC")
     fun listFlow(subscriptionId: Long): Flow<List<Notification>>
 
     @Query("SELECT * FROM notification WHERE deleted = 1 AND attachment_contentUri <> ''")
@@ -738,4 +755,19 @@ interface CustomHeaderDao {
 
     @Query("DELETE FROM CustomHeader WHERE baseUrl = :baseUrl AND name = :name")
     suspend fun delete(baseUrl: String, name: String)
+}
+
+@Dao
+interface UserProfileDao {
+    @Query("SELECT * FROM UserProfile WHERE id = 1")
+    suspend fun get(): UserProfile?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(profile: UserProfile)
+
+    @Update
+    suspend fun update(profile: UserProfile)
+
+    @Query("DELETE FROM UserProfile WHERE id = 1")
+    suspend fun delete()
 }

@@ -318,7 +318,7 @@ class ShareActivity : AppCompatActivity() {
 
                     // Encrypt the entire JSON message
                     try {
-                        val username = subscription.username ?: ""
+                        val username = repository.getUserProfile()?.username.orEmpty()
                         val gson = Gson()
                         val jsonMessage = gson.toJson(mapOf("user" to username, "message" to message))
                         CryptoUtil.encrypt(jsonMessage, encryptPassword)

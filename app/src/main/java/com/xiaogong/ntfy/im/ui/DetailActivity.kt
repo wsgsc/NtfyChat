@@ -49,20 +49,19 @@ import com.xiaogong.ntfy.im.util.formatDateShort
 import com.xiaogong.ntfy.im.util.isDarkThemeOn
 import com.xiaogong.ntfy.im.util.randomSubscriptionId
 import com.xiaogong.ntfy.im.util.topicShortUrl
-import com.xiaogong.ntfy.im.util.topicUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.Date
-import kotlin.random.Random
 import androidx.core.view.size
 import androidx.core.view.get
 import androidx.core.net.toUri
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import android.widget.ImageButton
+import android.widget.ImageView
 
 class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener, PublishFragment.PublishListener {
     private val viewModel by viewModels<DetailViewModel> {
@@ -93,6 +92,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     private lateinit var messageBarText: TextInputEditText
     private lateinit var messageBarPublishButton: FloatingActionButton
     private lateinit var messageBarExpandButton: ImageButton
+    private lateinit var messageBarEncryptIcon: ImageView
 
     // Action mode stuff
     private var actionMode: ActionMode? = null
@@ -148,7 +148,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         val toolbar = toolbarLayout.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
         toolbar.setTitleTextColor(toolbarTextColor)
         toolbar.setNavigationIconTint(toolbarTextColor)
-        toolbar.overflowIcon?.setTint(toolbarTextColor)
         setSupportActionBar(toolbar)
         
         // Set system status bar appearance
@@ -315,7 +314,12 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         viewModel.list(subscriptionId).observe(this) {
             it?.let {
                 // Show list view
-                adapter.submitList(it as MutableList<Notification>)
+                val firstLoad = adapter.currentList.isEmpty()
+                adapter.submitList(it as MutableList<Notification>) {
+                    if (firstLoad && it.isNotEmpty()) {
+                        mainList.scrollToPosition(it.size - 1)
+                    }
+                }
                 if (it.isEmpty()) {
                     mainListContainer.visibility = View.GONE
                     noEntriesText.visibility = View.VISIBLE
@@ -352,12 +356,12 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
         itemTouchHelper.attachToRecyclerView(mainList)
 
-        // Scroll up when new notification is added
+        // Scroll down when new notification is added
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                if (positionStart == 0) {
-                    Log.d(TAG, "$itemCount item(s) inserted at 0, scrolling to the top")
-                    mainList.scrollToPosition(positionStart)
+                if (positionStart + itemCount == adapter.itemCount) {
+                    Log.d(TAG, "$itemCount item(s) inserted at the end, scrolling to the bottom")
+                    mainList.scrollToPosition(adapter.itemCount - 1)
                 }
             }
         })
@@ -392,6 +396,15 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         messageBarText = messageBar.findViewById(R.id.message_bar_text)
         messageBarPublishButton = messageBar.findViewById(R.id.message_bar_publish_button)
         messageBarExpandButton = messageBar.findViewById(R.id.message_bar_expand_button)
+        messageBarEncryptIcon = messageBar.findViewById(R.id.message_bar_encrypt_icon)
+
+        // Update encrypt icon based on subscription state
+        lifecycleScope.launch(Dispatchers.IO) {
+            val subscription = repository.getSubscription(subscriptionBaseUrl, subscriptionTopic)
+            runOnUiThread {
+                messageBarEncryptIcon.visibility = if (subscription?.encryptionEnabled == true) View.VISIBLE else View.GONE
+            }
+        }
 
         // Message bar enabled: Show message bar, hide FAB
         if (repository.getMessageBarEnabled()) {
@@ -472,7 +485,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
 
                     // Encrypt the entire JSON message
                     try {
-                        val username = subscription.username ?: ""
+                        val username = repository.getUserProfile()?.username.orEmpty()
                         val gson = Gson()
                         val jsonMessage = gson.toJson(mapOf("user" to username, "message" to message))
                         CryptoUtil.encrypt(jsonMessage, encryptPassword)
@@ -563,9 +576,13 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
 
             showHideInstantMenuItems(subscriptionInstant)
             showHideMutedUntilMenuItems(subscriptionMutedUntil)
-            showHideCopyMenuItems(subscription.baseUrl)
             showHideConnectionErrorMenuItem(repository.getConnectionDetails())
             updateTitle(subscriptionDisplayName)
+            runOnUiThread {
+                if (this@DetailActivity::messageBarEncryptIcon.isInitialized) {
+                    messageBarEncryptIcon.visibility = if (subscription.encryptionEnabled) View.VISIBLE else View.GONE
+                }
+            }
         }
     }
 
@@ -606,7 +623,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         // Show and hide buttons
         showHideInstantMenuItems(subscriptionInstant)
         showHideMutedUntilMenuItems(subscriptionMutedUntil)
-        showHideCopyMenuItems(subscriptionBaseUrl)
         showHideConnectionErrorMenuItem(repository.getConnectionDetails())
 
         // Regularly check if "notification muted" time has passed
@@ -637,10 +653,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.detail_menu_test -> {
-                onTestClick()
-                true
-            }
             R.id.detail_menu_notifications_enabled -> {
                 onMutedUntilClick(enable = false)
                 true
@@ -665,98 +677,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 onConnectionErrorClick()
                 true
             }
-            R.id.detail_menu_copy_url -> {
-                onCopyUrlClick()
-                true
-            }
-            R.id.detail_menu_clear -> {
-                onClearClick()
-                true
-            }
-            R.id.detail_menu_settings -> {
-                onSettingsClick()
-                true
-            }
-            R.id.detail_menu_unsubscribe -> {
-                onDeleteClick()
-                true
-            }
             else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    private fun onTestClick() {
-        Log.d(TAG, "Sending test notification to ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                // Get subscription to check encryption settings
-                val subscription = repository.getSubscription(subscriptionBaseUrl, subscriptionTopic)
-
-                val user = repository.getUser(subscriptionBaseUrl)
-                val possibleTags = listOf(
-                    "warning", "skull", "success", "triangular_flag_on_post", "de",  "dog", "rotating_light", "cat", "bike", // Emojis
-                    "backup", "rsync", "de-server1", "this-is-a-tag"
-                )
-                val priority = Random.nextInt(1, 6)
-                val tags = possibleTags.shuffled().take(Random.nextInt(0, 4))
-                val title = if (Random.nextBoolean()) getString(R.string.detail_test_title) else ""
-                val originalMessage = getString(R.string.detail_test_message, priority)
-
-                // Prepare the message to send
-                val messageToSend = if (subscription?.encryptionEnabled == true) {
-                    // Encryption is enabled, encrypt the message
-                    val encryptPassword = subscription.encryptPassword
-                    if (encryptPassword.isNullOrEmpty()) {
-                        // Encryption enabled but no password configured
-                        runOnUiThread {
-                            Toast.makeText(
-                                this@DetailActivity,
-                                R.string.publish_dialog_error_no_encryption_password,
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                        return@launch
-                    }
-
-                    // Encrypt the entire JSON message for test
-                    try {
-                        val username = subscription.username ?: ""
-                        val gson = Gson()
-                        val jsonMessage = gson.toJson(mapOf("user" to username, "message" to originalMessage))
-                        CryptoUtil.encrypt(jsonMessage, encryptPassword)
-                    } catch (e: Exception) {
-                        runOnUiThread {
-                            Toast.makeText(
-                                this@DetailActivity,
-                                getString(R.string.publish_dialog_error_encryption, e.message),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                        return@launch
-                    }
-                } else {
-                    // Encryption not enabled, send plain message
-                    originalMessage
-                }
-
-                api.publish(subscriptionBaseUrl, subscriptionTopic, user, messageToSend, title, priority, tags, delay = "")
-            } catch (e: Exception) {
-                runOnUiThread {
-                    val message = if (e is ApiService.UnauthorizedException) {
-                        if (e.user != null) {
-                            getString(R.string.detail_test_message_error_unauthorized_user, e.user.username)
-                        }  else {
-                            getString(R.string.detail_test_message_error_unauthorized_anon)
-                        }
-                    } else {
-                        getString(R.string.detail_test_message_error, e.message)
-                    }
-                    Toast
-                        .makeText(this@DetailActivity, message, Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
         }
     }
 
@@ -795,15 +716,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                     }
                 }
             }
-        }
-    }
-
-    private fun onCopyUrlClick() {
-        val url = topicUrl(subscriptionBaseUrl, subscriptionTopic)
-        Log.d(TAG, "Copying topic URL $url to clipboard ")
-
-        runOnUiThread {
-            copyToClipboard(this, "topic address", url)
         }
     }
 
@@ -895,17 +807,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     }
 
 
-    private fun showHideCopyMenuItems(subscriptionBaseUrl: String) {
-        if (!this::menu.isInitialized) {
-            return
-        }
-        runOnUiThread {
-            // Hide links that lead to payments, see https://github.com/binwiederhier/ntfy/issues/1463
-            val copyUrlItem = menu.findItem(R.id.detail_menu_copy_url)
-            copyUrlItem?.isVisible = appBaseUrl != subscriptionBaseUrl || BuildConfig.PAYMENT_LINKS_AVAILABLE
-        }
-    }
-
     private fun showHideConnectionErrorMenuItem(details: Map<String, com.xiaogong.ntfy.im.db.ConnectionDetails>) {
         if (!this::menu.isInitialized) {
             return
@@ -922,63 +823,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         runOnUiThread {
             title = subscriptionDisplayName
         }
-    }
-
-    private fun onClearClick() {
-        Log.d(TAG, "Clearing all notifications for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
-
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setMessage(R.string.detail_clear_dialog_message)
-            .setPositiveButton(R.string.detail_clear_dialog_permanently_delete) { _, _ ->
-                lifecycleScope.launch(Dispatchers.IO) {
-                    repository.markAllAsDeleted(subscriptionId)
-                }
-            }
-            .setNegativeButton(R.string.detail_clear_dialog_cancel) { _, _ -> /* Do nothing */ }
-            .create()
-        dialog.setOnShowListener {
-            dialog
-                .getButton(AlertDialog.BUTTON_POSITIVE)
-                .dangerButton()
-        }
-        dialog.show()
-    }
-
-    private fun onSettingsClick() {
-        Log.d(TAG, "Opening subscription settings for ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
-
-        val intent = Intent(this, DetailSettingsActivity::class.java)
-        intent.putExtra(EXTRA_SUBSCRIPTION_ID, subscriptionId)
-        intent.putExtra(EXTRA_SUBSCRIPTION_BASE_URL, subscriptionBaseUrl)
-        intent.putExtra(EXTRA_SUBSCRIPTION_TOPIC, subscriptionTopic)
-        intent.putExtra(EXTRA_SUBSCRIPTION_DISPLAY_NAME, subscriptionDisplayName)
-        startActivity(intent)
-    }
-
-    private fun onDeleteClick() {
-        Log.d(TAG, "Deleting subscription ${topicShortUrl(subscriptionBaseUrl, subscriptionTopic)}")
-
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setMessage(R.string.detail_delete_dialog_message)
-            .setPositiveButton(R.string.detail_delete_dialog_permanently_delete) { _, _ ->
-                Log.d(TAG, "Deleting subscription with subscription ID $subscriptionId (topic: $subscriptionTopic)")
-                GlobalScope.launch(Dispatchers.IO) {
-                    repository.removeAllNotifications(subscriptionId)
-                    repository.removeSubscription(subscriptionId)
-                    if (subscriptionBaseUrl == appBaseUrl) {
-                        messenger.unsubscribe(subscriptionTopic)
-                    }
-                }
-                finish()
-            }
-            .setNegativeButton(R.string.detail_delete_dialog_cancel) { _, _ -> /* Do nothing */ }
-            .create()
-        dialog.setOnShowListener {
-            dialog
-                .getButton(AlertDialog.BUTTON_POSITIVE)
-                .dangerButton()
-        }
-        dialog.show()
     }
 
     private fun onNotificationClick(notification: Notification) {

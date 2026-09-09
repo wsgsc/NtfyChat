@@ -122,7 +122,11 @@
     <string name="add_dialog_button_cancel">Cancel</string>
     <string name="add_dialog_button_subscribe">Subscribe</string>
     <string name="add_dialog_button_back">Back</string>
+    <string name="add_dialog_button_done">Done</string>
     <string name="add_dialog_button_login">Log in</string>
+    <string name="add_dialog_encrypt_title">Set encryption (optional)</string>
+    <string name="add_dialog_encrypt_description">Optionally set a password to encrypt messages for this topic. You can generate a random password or enter your own. Tap Done to skip encryption.</string>
+    <string name="add_dialog_encrypt_password_hint">Encryption password (optional)</string>
     <string name="add_dialog_error_connection_failed">Connection failed: %1$s</string>
     <string name="add_dialog_login_title">Login required</string>
     <string name="add_dialog_login_description">This topic requires you to login. Please type in a username and password.</string>
@@ -260,6 +264,7 @@
     <string name="message_bar_hint">Type a message here</string>
     <string name="message_bar_publish_button_description">Publish message</string>
     <string name="message_bar_expand_button_description">More options</string>
+    <string name="message_bar_encrypt_icon_description">Encryption enabled</string>
 
     <!-- Detail activity: Publish FAB -->
     <string name="detail_fab_publish_description">Publish notification</string>
@@ -482,13 +487,6 @@
     <string name="detail_settings_appearance_display_name_title">Display name</string>
     <string name="detail_settings_appearance_display_name_message">Set a custom display name for this subscription. Leave blank for default (%1$s).</string>
     <string name="detail_settings_appearance_display_name_default_summary">%1$s (default)</string>
-    <string name="detail_settings_encryption_header">Encryption</string>
-    <string name="detail_settings_encryption_enabled_title">Enable encryption</string>
-    <string name="detail_settings_encryption_enabled_summary">Encrypt all messages for this subscription</string>
-    <string name="detail_settings_appearance_username_title">Username</string>
-    <string name="detail_settings_appearance_username_summary">Set username for encrypted messages</string>
-    <string name="detail_settings_appearance_encrypt_password_title">Encryption password</string>
-    <string name="detail_settings_appearance_encrypt_password_summary">Set password for message encryption</string>
     <string name="detail_settings_global_setting_title">Use global setting</string>
     <string name="detail_settings_global_setting_suffix">using global setting</string>
     <string name="detail_settings_about_header">About</string>
@@ -544,13 +542,36 @@
     <string name="client_certificate_dialog_error_invalid_p12_password">Invalid password or corrupted PKCS#12 file</string>
     <string name="client_certificate_dialog_error_invalid_url">Invalid service URL</string>
 
-    <!-- Encrypt password dialog (EncryptPasswordFragment) -->
-    <string name="encrypt_password_dialog_title">Encryption password</string>
-    <string name="encrypt_password_dialog_description">Set a password to encrypt messages for this subscription. You can generate a random password or enter your own.</string>
-    <string name="encrypt_password_dialog_password_hint">Password</string>
     <string name="encrypt_password_dialog_generate_button">Generate</string>
     <string name="encrypt_password_dialog_copy_button">Copy</string>
     <string name="encrypt_password_dialog_copy_label">Encryption password</string>
     <string name="encrypt_password_dialog_copy_success">Password copied to clipboard</string>
     <string name="encrypt_password_dialog_copy_empty">No password to copy</string>
+
+    <!-- Welcome activity (WelcomeActivity) -->
+    <string name="welcome_title">Welcome to NtfyChat</string>
+    <string name="welcome_subtitle">Set up your profile to get started</string>
+    <string name="welcome_avatar_description">User avatar</string>
+    <string name="welcome_select_avatar">Select Avatar</string>
+    <string name="welcome_username_hint">Username</string>
+    <string name="welcome_username_required">Please enter a username</string>
+    <string name="welcome_complete">Complete</string>
+    <string name="welcome_saving">Saving…</string>
+    <string name="welcome_save_error">Failed to save profile</string>
+    <string name="welcome_permission_denied">Permission denied. Cannot select image.</string>
+
+    <!-- Bottom navigation -->
+    <string name="bottom_nav_chat_rooms">Chat Rooms</string>
+    <string name="bottom_nav_profile">Me</string>
+
+    <!-- Profile fragment -->
+    <string name="profile_username_placeholder">Username</string>
+    <string name="profile_tap_to_edit">Tap to edit profile</string>
+    <string name="profile_edit">Edit</string>
+    <string name="profile_settings_section">Settings</string>
+    <string name="profile_item_settings">Settings</string>
+    <string name="profile_item_about">About</string>
+    <string name="profile_item_help">Help &amp; Documentation</string>
+    <string name="profile_version">Version %1$s</string>
+
 </resources>

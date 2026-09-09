@@ -66,26 +66,6 @@
                 app:isPreferenceVisible="false"/>
     </PreferenceCategory>
     <PreferenceCategory
-        app:key="@string/detail_settings_encryption_header_key"
-        app:title="@string/detail_settings_encryption_header">
-        <SwitchPreferenceCompat
-                app:key="@string/detail_settings_encryption_enabled_key"
-                app:title="@string/detail_settings_encryption_enabled_title"
-                app:summary="@string/detail_settings_encryption_enabled_summary"
-                app:isPreferenceVisible="false"/>
-        <EditTextPreference
-                app:key="@string/detail_settings_appearance_username_key"
-                app:title="@string/detail_settings_appearance_username_title"
-                app:summary="@string/detail_settings_appearance_username_summary"
-                app:dialogLayout="@layout/preference_dialog_edittext_edited"
-                app:isPreferenceVisible="false"/>
-        <Preference
-                app:key="@string/detail_settings_appearance_encrypt_password_key"
-                app:title="@string/detail_settings_appearance_encrypt_password_title"
-                app:summary="@string/detail_settings_appearance_encrypt_password_summary"
-                app:isPreferenceVisible="false"/>
-    </PreferenceCategory>
-    <PreferenceCategory
         app:key="@string/detail_settings_about_header_key"
         app:title="@string/detail_settings_about_header">
         <Preference

@@ -21,6 +21,7 @@ import com.xiaogong.ntfy.im.db.User
 import com.xiaogong.ntfy.im.msg.ApiService
 import com.xiaogong.ntfy.im.util.CertUtil
 import com.xiaogong.ntfy.im.util.*
+import java.security.SecureRandom
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.core.view.isVisible
@@ -63,8 +64,13 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
     private lateinit var loginErrorText: TextView
     private lateinit var loginErrorTextImage: View
 
+    // Optional encryption fields on subscribe page
+    private lateinit var encryptPasswordText: TextInputEditText
+    private lateinit var encryptGenerateButton: com.google.android.material.button.MaterialButton
+    private lateinit var encryptCopyButton: com.google.android.material.button.MaterialButton
+
     interface SubscribeListener {
-        fun onSubscribe(topic: String, baseUrl: String, instant: Boolean)
+        fun onSubscribe(topic: String, baseUrl: String, instant: Boolean, encryptPassword: String?)
     }
 
     override fun onAttach(context: Context) {
@@ -133,6 +139,25 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
         loginProgress = view.findViewById(R.id.add_dialog_login_progress)
         loginErrorText = view.findViewById(R.id.add_dialog_login_error_text)
         loginErrorTextImage = view.findViewById(R.id.add_dialog_login_error_text_image)
+
+        // Optional encryption fields
+        encryptPasswordText = view.findViewById(R.id.add_dialog_encrypt_password_text)
+        encryptGenerateButton = view.findViewById(R.id.add_dialog_encrypt_generate_button)
+        encryptCopyButton = view.findViewById(R.id.add_dialog_encrypt_copy_button)
+        encryptGenerateButton.setOnClickListener {
+            val pw = generateRandomPassword(32)
+            encryptPasswordText.setText(pw)
+            encryptPasswordText.setSelection(pw.length)
+        }
+        encryptCopyButton.setOnClickListener {
+            val pw = encryptPasswordText.text?.toString()
+            if (!pw.isNullOrEmpty()) {
+                copyToClipboard(requireContext(), getString(R.string.encrypt_password_dialog_copy_label), pw)
+                Toast.makeText(requireContext(), getString(R.string.encrypt_password_dialog_copy_success), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.encrypt_password_dialog_copy_empty), Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // Set foreground description text
         subscribeForegroundDescription.text = getString(R.string.add_dialog_foreground_description, shortUrl(appBaseUrl))
@@ -430,7 +455,8 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
             val baseUrl = getBaseUrl()
             val topic = subscribeTopicText.text.toString()
             val instant = !BuildConfig.FIREBASE_AVAILABLE || baseUrl != appBaseUrl || subscribeInstantDeliveryCheckbox.isChecked
-            subscribeListener.onSubscribe(topic, baseUrl, instant)
+            val encryptPassword = encryptPasswordText.text?.toString()?.takeIf { it.isNotEmpty() }
+            subscribeListener.onSubscribe(topic, baseUrl, instant, encryptPassword)
             dialog?.dismiss()
         }
     }
@@ -474,11 +500,22 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
         }
     }
 
+    private fun generateRandomPassword(length: Int): String {
+        val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        val random = SecureRandom()
+        val sb = StringBuilder(length)
+        for (i in 0 until length) sb.append(chars[random.nextInt(chars.length)])
+        return sb.toString()
+    }
+
     private fun enableSubscribeView(enable: Boolean) {
         subscribeTopicText.isEnabled = enable
         subscribeBaseUrlText.isEnabled = enable
         subscribeInstantDeliveryCheckbox.isEnabled = enable
         subscribeUseAnotherServerCheckbox.isEnabled = enable
+        encryptPasswordText.isEnabled = enable
+        encryptGenerateButton.isEnabled = enable
+        encryptCopyButton.isEnabled = enable
         actionMenuItem.isEnabled = enable
     }
 

@@ -206,6 +206,59 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_instant_delivery_description"/>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/add_dialog_encrypt_password_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:endIconMode="password_toggle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_foreground_description">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/add_dialog_encrypt_password_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/add_dialog_encrypt_password_hint"
+                        android:importantForAutofill="no"
+                        android:inputType="textPassword"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:id="@+id/add_dialog_encrypt_buttons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_dialog_encrypt_password_layout">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/add_dialog_encrypt_generate_button"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:text="@string/encrypt_password_dialog_generate_button"
+                        app:icon="@drawable/ic_refresh_white_24dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/add_dialog_encrypt_copy_button"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:text="@string/encrypt_password_dialog_copy_button"
+                        app:icon="@drawable/ic_content_copy_white_24dp" />
+
+                </LinearLayout>
+
                 <ImageView
                     android:id="@+id/add_dialog_subscribe_error_text_image"
                     android:layout_width="20dp"
@@ -226,13 +279,14 @@
                     android:paddingEnd="4dp"
                     android:textAppearance="@style/DangerText"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_foreground_description"
+                    app:layout_constraintTop_toBottomOf="@id/add_dialog_encrypt_buttons"
                     app:layout_constraintStart_toEndOf="@id/add_dialog_subscribe_error_text_image"
                     tools:visibility="gone"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
+
 
         <ScrollView
             android:layout_width="match_parent"

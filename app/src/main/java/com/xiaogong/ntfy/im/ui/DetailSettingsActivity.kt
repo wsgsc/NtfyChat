@@ -95,7 +95,7 @@ class DetailSettingsActivity : AppCompatActivity() {
         return true
     }
 
-    class SettingsFragment : BasePreferenceFragment(), EncryptPasswordFragment.EncryptPasswordDialogListener {
+    class SettingsFragment : BasePreferenceFragment() {
         private lateinit var resolver: ContentResolver
         private lateinit var repository: Repository
         private lateinit var serviceManager: SubscriberServiceManager
@@ -150,9 +150,6 @@ class DetailSettingsActivity : AppCompatActivity() {
                 notificationsHeader?.isVisible = false
             }
             loadDisplayNamePref()
-            loadEncryptionEnabledPref()
-            loadUsernamePref()
-            loadEncryptPasswordPref()
             loadTopicUrlPref()
         }
 
@@ -425,79 +422,6 @@ class DetailSettingsActivity : AppCompatActivity() {
                     provider.text
                 }
             }
-        }
-
-        private fun loadEncryptionEnabledPref() {
-            val prefId = context?.getString(R.string.detail_settings_encryption_enabled_key) ?: return
-            val pref: SwitchPreferenceCompat? = findPreference(prefId)
-            pref?.isVisible = true
-            pref?.isChecked = subscription.encryptionEnabled
-            pref?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putBoolean(key: String?, value: Boolean) {
-                    save(subscription.copy(encryptionEnabled = value))
-                    // Update visibility of username and password fields
-                    updateEncryptionFieldsVisibility(value)
-                }
-                override fun getBoolean(key: String?, defValue: Boolean): Boolean {
-                    return subscription.encryptionEnabled
-                }
-            }
-        }
-
-        private fun updateEncryptionFieldsVisibility(enabled: Boolean) {
-            val usernameId = context?.getString(R.string.detail_settings_appearance_username_key) ?: return
-            val passwordId = context?.getString(R.string.detail_settings_appearance_encrypt_password_key) ?: return
-            val usernamePref: EditTextPreference? = findPreference(usernameId)
-            val passwordPref: Preference? = findPreference(passwordId)
-            usernamePref?.isVisible = enabled
-            passwordPref?.isVisible = enabled
-        }
-
-        private fun loadUsernamePref() {
-            val prefId = context?.getString(R.string.detail_settings_appearance_username_key) ?: return
-            val pref: EditTextPreference? = findPreference(prefId)
-            pref?.isVisible = subscription.encryptionEnabled
-            pref?.text = subscription.username
-            pref?.preferenceDataStore = object : PreferenceDataStore() {
-                override fun putString(key: String?, value: String?) {
-                    val username = if (value != "") value else null
-                    save(subscription.copy(username = username))
-                }
-                override fun getString(key: String?, defValue: String?): String {
-                    return subscription.username ?: ""
-                }
-            }
-            pref?.summaryProvider = Preference.SummaryProvider<EditTextPreference> { provider ->
-                if (TextUtils.isEmpty(provider.text)) {
-                    getString(R.string.detail_settings_appearance_username_summary)
-                } else {
-                    provider.text
-                }
-            }
-        }
-
-        private fun loadEncryptPasswordPref() {
-            val prefId = context?.getString(R.string.detail_settings_appearance_encrypt_password_key) ?: return
-            val pref: Preference? = findPreference(prefId)
-            pref?.isVisible = subscription.encryptionEnabled
-            pref?.preferenceDataStore = object : PreferenceDataStore() { } // Dummy store to protect from accidentally overwriting
-            pref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                val dialog = EncryptPasswordFragment.newInstance(subscription.encryptPassword)
-                dialog.show(childFragmentManager, EncryptPasswordFragment.TAG)
-                true
-            }
-            pref?.summary = if (TextUtils.isEmpty(subscription.encryptPassword)) {
-                getString(R.string.detail_settings_appearance_encrypt_password_summary)
-            } else {
-                // Show masked password
-                "*".repeat(subscription.encryptPassword?.length ?: 0)
-            }
-        }
-
-        override fun onSavePassword(dialog: androidx.fragment.app.DialogFragment, password: String?) {
-            save(subscription.copy(encryptPassword = password))
-            // Update summary
-            loadEncryptPasswordPref()
         }
 
         private fun loadTopicUrlPref() {
