@@ -495,7 +495,7 @@ class PublishFragment : DialogFragment() {
 
     private fun validateInput() {
         if (!this::publishMenuItem.isInitialized) return
-        publishMenuItem.isEnabled = true
+        publishMenuItem.isEnabled = messageText.text?.isNotBlank() == true
     }
 
     private fun onSendClick() {
@@ -699,6 +699,7 @@ class PublishFragment : DialogFragment() {
         phoneCallText.isEnabled = enable
         
         publishMenuItem.isEnabled = enable
+        if (enable) validateInput()
     }
 
     companion object {

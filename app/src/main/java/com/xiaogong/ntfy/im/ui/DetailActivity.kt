@@ -411,9 +411,17 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
             fab.visibility = View.GONE
             messageBar.visibility = View.VISIBLE
 
+            // Initial state: disabled
+            updateSendButton()
+            messageBarText.addTextChangedListener(object : android.text.TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+                override fun afterTextChanged(s: android.text.Editable?) { updateSendButton() }
+            })
+
             // Send button click
             messageBarPublishButton.setOnClickListener {
-                publishMessage(messageBarText.text.toString()) // Allow publishing empty messages
+                publishMessage(messageBarText.text.toString())
             }
 
             // Expand button click opens the full dialog
@@ -451,14 +459,20 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         }
     }
 
+    private fun updateSendButton() {
+        val hasText = messageBarText.text?.isNotBlank() == true
+        messageBarPublishButton.isEnabled = hasText
+        messageBarPublishButton.alpha = if (hasText) 1.0f else 0.38f
+    }
+
     private fun openPublishDialog(initialMessage: String) {
         val fragment = PublishFragment.newInstance(subscriptionBaseUrl, subscriptionTopic, subscriptionDisplayName, initialMessage)
         fragment.show(supportFragmentManager, PublishFragment.TAG)
     }
 
     private fun publishMessage(message: String) {
-        // Disable send button while publishing
         messageBarPublishButton.isEnabled = false
+        messageBarPublishButton.alpha = 0.38f
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -473,7 +487,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                         // Encryption enabled but no password configured
                         Log.w(TAG, "Encryption enabled but password not configured")
                         runOnUiThread {
-                            messageBarPublishButton.isEnabled = true
+                            updateSendButton()
                             Toast.makeText(
                                 this@DetailActivity,
                                 R.string.publish_dialog_error_no_encryption_password,
@@ -493,7 +507,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                         // If encryption fails, show error and abort
                         Log.w(TAG, "Failed to encrypt message", e)
                         runOnUiThread {
-                            messageBarPublishButton.isEnabled = true
+                            updateSendButton()
                             Toast.makeText(
                                 this@DetailActivity,
                                 getString(R.string.publish_dialog_error_encryption, e.message),
@@ -520,12 +534,12 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 )
                 runOnUiThread {
                     messageBarText.text?.clear()
-                    messageBarPublishButton.isEnabled = true
+                    updateSendButton()
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to publish message", e)
                 runOnUiThread {
-                    messageBarPublishButton.isEnabled = true
+                    updateSendButton()
                     val errorMessage = when (e) {
                         is ApiService.UnauthorizedException -> {
                             if (e.user != null) {
