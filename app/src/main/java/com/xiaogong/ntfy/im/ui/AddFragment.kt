@@ -64,6 +64,10 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
     private lateinit var loginErrorText: TextView
     private lateinit var loginErrorTextImage: View
 
+    // Topic buttons
+    private lateinit var topicGenerateButton: com.google.android.material.button.MaterialButton
+    private lateinit var topicCopyButton: com.google.android.material.button.MaterialButton
+
     // Optional encryption fields on subscribe page
     private lateinit var encryptPasswordText: TextInputEditText
     private lateinit var encryptGenerateButton: com.google.android.material.button.MaterialButton
@@ -139,6 +143,24 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
         loginProgress = view.findViewById(R.id.add_dialog_login_progress)
         loginErrorText = view.findViewById(R.id.add_dialog_login_error_text)
         loginErrorTextImage = view.findViewById(R.id.add_dialog_login_error_text_image)
+
+        // Topic generate/copy buttons
+        topicGenerateButton = view.findViewById(R.id.add_dialog_topic_generate_button)
+        topicCopyButton = view.findViewById(R.id.add_dialog_topic_copy_button)
+        topicGenerateButton.setOnClickListener {
+            val topic = generateRandomTopic(64)
+            subscribeTopicText.setText(topic)
+            subscribeTopicText.setSelection(topic.length)
+        }
+        topicCopyButton.setOnClickListener {
+            val topic = subscribeTopicText.text?.toString()
+            if (!topic.isNullOrEmpty()) {
+                copyToClipboard(requireContext(), getString(R.string.add_dialog_topic_copy_label), topic)
+                Toast.makeText(requireContext(), getString(R.string.add_dialog_topic_copy_success), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.add_dialog_topic_copy_empty), Toast.LENGTH_SHORT).show()
+            }
+        }
 
         // Optional encryption fields
         encryptPasswordText = view.findViewById(R.id.add_dialog_encrypt_password_text)
@@ -500,6 +522,14 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
         }
     }
 
+    private fun generateRandomTopic(length: Int): String {
+        val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+        val random = SecureRandom()
+        val sb = StringBuilder(length)
+        for (i in 0 until length) sb.append(chars[random.nextInt(chars.length)])
+        return sb.toString()
+    }
+
     private fun generateRandomPassword(length: Int): String {
         val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         val random = SecureRandom()
@@ -513,6 +543,8 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
         subscribeBaseUrlText.isEnabled = enable
         subscribeInstantDeliveryCheckbox.isEnabled = enable
         subscribeUseAnotherServerCheckbox.isEnabled = enable
+        topicGenerateButton.isEnabled = enable
+        topicCopyButton.isEnabled = enable
         encryptPasswordText.isEnabled = enable
         encryptGenerateButton.isEnabled = enable
         encryptCopyButton.isEnabled = enable

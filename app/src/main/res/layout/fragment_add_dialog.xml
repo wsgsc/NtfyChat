@@ -92,6 +92,38 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <LinearLayout
+                    android:id="@+id/add_dialog_topic_buttons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_topic_layout">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/add_dialog_topic_generate_button"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:text="@string/add_dialog_topic_generate_button"
+                        app:icon="@drawable/ic_refresh_white_24dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/add_dialog_topic_copy_button"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:text="@string/add_dialog_topic_copy_button"
+                        app:icon="@drawable/ic_content_copy_white_24dp" />
+
+                </LinearLayout>
+
                 <CheckBox
                     android:id="@+id/add_dialog_subscribe_use_another_server_checkbox"
                     android:text="@string/add_dialog_use_another_server"
@@ -101,7 +133,7 @@
                     android:layout_marginTop="-3dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_dialog_subscribe_topic_layout"/>
+                    app:layout_constraintTop_toBottomOf="@id/add_dialog_topic_buttons"/>
 
                 <TextView
                     android:id="@+id/add_dialog_subscribe_use_another_server_description"
