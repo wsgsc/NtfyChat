@@ -291,6 +291,27 @@
 
                 </LinearLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/add_dialog_display_name_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/add_dialog_encrypt_buttons">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/add_dialog_display_name_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/add_dialog_display_name_hint"
+                        android:importantForAutofill="no"
+                        android:maxLines="1"
+                        android:inputType="text"
+                        android:maxLength="64" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <ImageView
                     android:id="@+id/add_dialog_subscribe_error_text_image"
                     android:layout_width="20dp"
@@ -311,7 +332,7 @@
                     android:paddingEnd="4dp"
                     android:textAppearance="@style/DangerText"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_dialog_encrypt_buttons"
+                    app:layout_constraintTop_toBottomOf="@id/add_dialog_display_name_layout"
                     app:layout_constraintStart_toEndOf="@id/add_dialog_subscribe_error_text_image"
                     tools:visibility="gone"/>
 

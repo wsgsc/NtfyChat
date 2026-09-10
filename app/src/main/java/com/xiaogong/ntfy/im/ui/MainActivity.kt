@@ -717,7 +717,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         newFragment.show(supportFragmentManager, AddFragment.TAG)
     }
 
-    override fun onSubscribe(topic: String, baseUrl: String, instant: Boolean, encryptPassword: String?) {
+    override fun onSubscribe(topic: String, baseUrl: String, instant: Boolean, encryptPassword: String?, displayName: String?) {
         Log.d(TAG, "Adding subscription ${topicShortUrl(baseUrl, topic)} (instant = $instant)")
 
         // Add subscription to database
@@ -735,7 +735,7 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             icon = null,
             upAppId = null,
             upConnectorToken = null,
-            displayName = null,
+            displayName = displayName,
             encryptionEnabled = encryptPassword != null,
             username = null,
             encryptPassword = encryptPassword,
@@ -780,9 +780,51 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
     }
 
     private fun onSubscriptionItemLongClick(subscription: Subscription) {
-        if (actionMode == null) {
-            beginActionMode(subscription)
+        if (actionMode != null) return
+        MaterialAlertDialogBuilder(this)
+            .setItems(arrayOf(
+                getString(R.string.main_item_long_click_rename),
+                getString(R.string.main_item_long_click_info),
+                getString(R.string.main_action_mode_menu_unsubscribe)
+            )) { _, which ->
+                when (which) {
+                    0 -> showRenameDialog(subscription)
+                    1 -> showChatRoomInfo(subscription)
+                    2 -> beginActionMode(subscription)
+                }
+            }
+            .show()
+    }
+
+    private fun showRenameDialog(subscription: Subscription) {
+        val editText = android.widget.EditText(this).apply {
+            setText(subscription.displayName ?: displayName(appBaseUrl, subscription))
+            selectAll()
         }
+        val padding = (20 * resources.displayMetrics.density).toInt()
+        val container = android.widget.FrameLayout(this).apply {
+            setPadding(padding, 0, padding, 0)
+            addView(editText)
+        }
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.detail_rename_dialog_title)
+            .setView(container)
+            .setPositiveButton(R.string.detail_rename_dialog_save) { _, _ ->
+                val newName = editText.text.toString().trim().ifBlank { null }
+                lifecycleScope.launch(Dispatchers.IO) {
+                    repository.updateSubscription(subscription.copy(displayName = newName))
+                }
+            }
+            .setNegativeButton(R.string.detail_rename_dialog_cancel, null)
+            .show()
+    }
+
+    private fun showChatRoomInfo(subscription: Subscription) {
+        val intent = Intent(this, ChatRoomInfoActivity::class.java)
+        intent.putExtra(ChatRoomInfoActivity.EXTRA_DISPLAY_NAME, displayName(appBaseUrl, subscription))
+        intent.putExtra(ChatRoomInfoActivity.EXTRA_TOPIC, subscription.topic)
+        intent.putExtra(ChatRoomInfoActivity.EXTRA_PASSWORD, subscription.encryptPassword)
+        startActivity(intent)
     }
 
     private fun refreshAllSubscriptions() {

@@ -45,13 +45,12 @@ import androidx.core.net.toUri
 class DetailAdapter(private val activity: Activity, private val lifecycleScope: CoroutineScope, private val repository: Repository, private val onClick: (Notification) -> Unit, private val onLongClick: (Notification) -> Unit) :
     ListAdapter<Notification, DetailAdapter.DetailViewHolder>(TopicDiffCallback) {
     private val markwon: Markwon = MarkwonFactory.createForMessage(activity)
-    val selected = mutableSetOf<String>() // Notification IDs
 
     /* Creates and inflates view and return TopicViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_detail_item, parent, false)
-        return DetailViewHolder(activity, lifecycleScope, repository, markwon, view, selected, onClick, onLongClick)
+        return DetailViewHolder(activity, lifecycleScope, repository, markwon, view, onClick, onLongClick)
     }
 
     /* Gets current topic and uses it to bind view. */
@@ -63,20 +62,6 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         return getItem(position)
     }
 
-    fun toggleSelection(notificationId: String) {
-        if (selected.contains(notificationId)) {
-            selected.remove(notificationId)
-        } else {
-            selected.add(notificationId)
-        }
-
-        if (selected.isNotEmpty()) {
-            val listIds = currentList.map { notification -> notification.id }
-            val notificationPosition = listIds.indexOf(notificationId)
-            notifyItemChanged(notificationPosition)
-        }
-    }
-
     /* ViewHolder for Topic, takes in the inflated view and the onClick behavior. */
     class DetailViewHolder(
         private val activity: Activity,
@@ -84,7 +69,6 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         private val repository: Repository,
         private val markwon: Markwon,
         itemView: View,
-        private val selected: Set<String>,
         val onClick: (Notification) -> Unit,
         val onLongClick: (Notification) -> Unit
     ) :
@@ -149,11 +133,7 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
             } else {
                 tagsView.visibility = View.GONE
             }
-            if (selected.contains(notification.id)) {
-                cardView.setCardBackgroundColor(Colors.cardSelectedBackgroundColor(context))
-            } else {
-                cardView.setCardBackgroundColor(Colors.cardBackgroundColor(context))
-            }
+            cardView.setCardBackgroundColor(Colors.cardBackgroundColor(context))
             val attachment = notification.attachment
             val attachmentFileStat = maybeFileStat(context, attachment?.contentUri)
             val iconFileStat = maybeFileStat(context, notification.icon?.contentUri)

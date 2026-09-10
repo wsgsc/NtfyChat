@@ -92,6 +92,12 @@
                 android:parentActivityName=".ui.DetailActivity">
         </activity>
 
+        <!-- Chat room info activity -->
+        <activity
+                android:name=".ui.ChatRoomInfoActivity"
+                android:parentActivityName=".ui.MainActivity">
+        </activity>
+
         <!-- Share file activity, incoming files/shares -->
         <activity android:name=".ui.ShareActivity" android:exported="true">
             <intent-filter>

@@ -548,6 +548,18 @@
     <string name="add_dialog_topic_copy_label">Topic</string>
     <string name="add_dialog_topic_copy_success">主题已复制到剪贴板</string>
     <string name="add_dialog_topic_copy_empty">没有主题可复制</string>
+    <string name="add_dialog_display_name_hint">聊天室名称（可选）</string>
+
+    <string name="main_item_long_click_rename">修改名称</string>
+    <string name="main_item_long_click_info">聊天室信息</string>
+    <string name="chat_info_topic_label">主题</string>
+    <string name="chat_info_password_label">加密密码</string>
+    <string name="chat_info_password_not_set">未设置</string>
+    <string name="chat_info_topic_copied">主题已复制</string>
+    <string name="chat_info_password_copied">加密密码已复制</string>
+    <string name="detail_rename_dialog_title">修改聊天室名称</string>
+    <string name="detail_rename_dialog_save">保存</string>
+    <string name="detail_rename_dialog_cancel">取消</string>
 
     <string name="encrypt_password_dialog_generate_button">Generate</string>
     <string name="encrypt_password_dialog_copy_button">Copy</string>

@@ -68,13 +68,16 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
     private lateinit var topicGenerateButton: com.google.android.material.button.MaterialButton
     private lateinit var topicCopyButton: com.google.android.material.button.MaterialButton
 
+    // Display name field
+    private lateinit var subscribeDisplayNameText: TextInputEditText
+
     // Optional encryption fields on subscribe page
     private lateinit var encryptPasswordText: TextInputEditText
     private lateinit var encryptGenerateButton: com.google.android.material.button.MaterialButton
     private lateinit var encryptCopyButton: com.google.android.material.button.MaterialButton
 
     interface SubscribeListener {
-        fun onSubscribe(topic: String, baseUrl: String, instant: Boolean, encryptPassword: String?)
+        fun onSubscribe(topic: String, baseUrl: String, instant: Boolean, encryptPassword: String?, displayName: String?)
     }
 
     override fun onAttach(context: Context) {
@@ -180,6 +183,9 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
                 Toast.makeText(requireContext(), getString(R.string.encrypt_password_dialog_copy_empty), Toast.LENGTH_SHORT).show()
             }
         }
+
+        // Display name field
+        subscribeDisplayNameText = view.findViewById(R.id.add_dialog_display_name_text)
 
         // Set foreground description text
         subscribeForegroundDescription.text = getString(R.string.add_dialog_foreground_description, shortUrl(appBaseUrl))
@@ -478,7 +484,8 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
             val topic = subscribeTopicText.text.toString()
             val instant = !BuildConfig.FIREBASE_AVAILABLE || baseUrl != appBaseUrl || subscribeInstantDeliveryCheckbox.isChecked
             val encryptPassword = encryptPasswordText.text?.toString()?.takeIf { it.isNotEmpty() }
-            subscribeListener.onSubscribe(topic, baseUrl, instant, encryptPassword)
+            val displayName = subscribeDisplayNameText.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }
+            subscribeListener.onSubscribe(topic, baseUrl, instant, encryptPassword, displayName)
             dialog?.dismiss()
         }
     }
@@ -545,6 +552,7 @@ class AddFragment : DialogFragment(), TrustedCertificateFragment.TrustedCertific
         subscribeUseAnotherServerCheckbox.isEnabled = enable
         topicGenerateButton.isEnabled = enable
         topicCopyButton.isEnabled = enable
+        subscribeDisplayNameText.isEnabled = enable
         encryptPasswordText.isEnabled = enable
         encryptGenerateButton.isEnabled = enable
         encryptCopyButton.isEnabled = enable

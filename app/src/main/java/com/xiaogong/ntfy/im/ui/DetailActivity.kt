@@ -1,6 +1,5 @@
 package com.xiaogong.ntfy.im.ui
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.net.Uri
@@ -14,7 +13,6 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.ActionMode
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -25,7 +23,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.xiaogong.ntfy.im.BuildConfig
 import com.xiaogong.ntfy.im.R
@@ -41,7 +38,6 @@ import com.xiaogong.ntfy.im.service.SubscriberServiceManager
 import com.xiaogong.ntfy.im.util.CryptoUtil
 import com.xiaogong.ntfy.im.util.Log
 import com.xiaogong.ntfy.im.util.copyToClipboard
-import com.xiaogong.ntfy.im.util.dangerButton
 import com.xiaogong.ntfy.im.util.decodeMessage
 import com.xiaogong.ntfy.im.util.displayName
 import com.xiaogong.ntfy.im.util.formatDateShort
@@ -84,6 +80,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     private var subscriptionMutedUntil: Long = 0L // Set in onCreate() & updated by options menu!
 
     // UI elements
+    private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
     private lateinit var adapter: DetailAdapter
     private lateinit var mainList: RecyclerView
     private lateinit var mainListContainer: SwipeRefreshLayout
@@ -95,39 +92,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     private lateinit var messageBarExpandButton: ImageButton
     private lateinit var messageBarEncryptIcon: ImageView
     private lateinit var messageBarEmojiButton: ImageButton
-
-    // Action mode stuff
-    private var actionMode: ActionMode? = null
-    private val actionModeCallback = object : ActionMode.Callback {
-        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            actionMode = mode
-            if (mode != null) {
-                mode.menuInflater.inflate(R.menu.menu_detail_action_mode, menu)
-                mode.title = "1" // One item selected
-            }
-            return true
-        }
-
-        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?) = false
-
-        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem): Boolean {
-            return when (item.itemId) {
-                R.id.detail_action_mode_copy -> {
-                    onMultiCopyClick()
-                    true
-                }
-                R.id.detail_action_mode_delete -> {
-                    onMultiDeleteClick()
-                    true
-                }
-                else -> false
-            }
-        }
-
-        override fun onDestroyActionMode(mode: ActionMode?) {
-            endActionModeAndRedraw()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -147,11 +111,11 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         val toolbarTextColor = Colors.toolbarTextColor(this, dynamicColors, darkMode)
         toolbarLayout.setBackgroundColor(statusBarColor)
         
-        val toolbar = toolbarLayout.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+        toolbar = toolbarLayout.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
         toolbar.setTitleTextColor(toolbarTextColor)
         toolbar.setNavigationIconTint(toolbarTextColor)
         setSupportActionBar(toolbar)
-        
+
         // Set system status bar appearance
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars =
             Colors.shouldUseLightStatusBar(dynamicColors, darkMode)
@@ -844,10 +808,32 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         }
     }
 
+    private fun showRenameDialog() {
+        val editText = android.widget.EditText(this)
+        editText.setText(subscriptionDisplayName)
+        editText.selectAll()
+        editText.setSingleLine(true)
+        val padding = (24 * resources.displayMetrics.density).toInt()
+        editText.setPadding(padding, padding / 2, padding, padding / 2)
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.detail_rename_dialog_title)
+            .setView(editText)
+            .setPositiveButton(R.string.detail_rename_dialog_save) { _, _ ->
+                val newName = editText.text?.toString()?.trim()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val subscription = repository.getSubscription(subscriptionId) ?: return@launch
+                    val updatedSubscription = subscription.copy(displayName = newName?.takeIf { it.isNotEmpty() })
+                    repository.updateSubscription(updatedSubscription)
+                    subscriptionDisplayName = displayName(appBaseUrl ?: "", updatedSubscription)
+                    updateTitle(subscriptionDisplayName)
+                }
+            }
+            .setNegativeButton(R.string.detail_rename_dialog_cancel, null)
+            .show()
+    }
+
     private fun onNotificationClick(notification: Notification) {
-        if (actionMode != null) {
-            handleActionModeClick(notification)
-        } else if (notification.click != "") {
+        if (notification.click != "") {
             try {
                 startActivity(Intent(ACTION_VIEW, notification.click.toUri()))
             } catch (e: Exception) {
@@ -866,72 +852,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     }
 
     private fun onNotificationLongClick(notification: Notification) {
-        if (actionMode == null) {
-            beginActionMode(notification)
-        }
-    }
-
-    private fun handleActionModeClick(notification: Notification) {
-        adapter.toggleSelection(notification.id)
-        if (adapter.selected.size == 0) {
-            finishActionMode()
-        } else {
-            actionMode!!.title = adapter.selected.size.toString()
-        }
-    }
-
-    private fun onMultiCopyClick() {
-        Log.d(TAG, "Copying multiple notifications to clipboard")
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val content = adapter.selected.joinToString("\n\n") { notificationId ->
-                val notification = repository.getNotification(notificationId)
-                notification?.let {
-                    decodeMessage(it) + "\n" + Date(it.timestamp * 1000).toString()
-                }.orEmpty()
-            }
-            runOnUiThread {
-                copyToClipboard(this@DetailActivity, "notifications", content)
-                finishActionMode()
-            }
-        }
-    }
-
-    private fun onMultiDeleteClick() {
-        Log.d(TAG, "Showing multi-delete dialog for selected items")
-
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setMessage(R.string.detail_action_mode_delete_dialog_message)
-            .setPositiveButton(R.string.detail_action_mode_delete_dialog_permanently_delete) { _, _ ->
-                adapter.selected.map { notificationId -> viewModel.markAsDeleted(notificationId) }
-                finishActionMode()
-            }
-            .setNegativeButton(R.string.detail_action_mode_delete_dialog_cancel) { _, _ ->
-                finishActionMode()
-            }
-            .create()
-        dialog.setOnShowListener {
-            dialog
-                .getButton(AlertDialog.BUTTON_POSITIVE)
-                .dangerButton()
-        }
-        dialog.show()
-    }
-
-    private fun beginActionMode(notification: Notification) {
-        actionMode = startSupportActionMode(actionModeCallback)
-        adapter.toggleSelection(notification.id)
-    }
-
-    private fun finishActionMode() {
-        actionMode?.finish()
-        endActionModeAndRedraw()
-    }
-
-    private fun endActionModeAndRedraw() {
-        actionMode = null
-        adapter.selected.clear()
-        adapter.notifyItemRangeChanged(0, adapter.currentList.size)
+        showRenameDialog()
     }
 
     companion object {
