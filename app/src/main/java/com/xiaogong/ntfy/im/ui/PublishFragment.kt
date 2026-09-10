@@ -197,6 +197,15 @@ class PublishFragment : DialogFragment() {
         // Main fields
         titleText = view.findViewById(R.id.publish_dialog_title_text)
         messageText = view.findViewById(R.id.publish_dialog_message_text)
+
+        view.findViewById<android.widget.ImageButton>(R.id.publish_dialog_emoji_button)?.setOnClickListener {
+            val fragment = EmojiPickerFragment()
+            fragment.onEmojiSelected = { emoji ->
+                val start = messageText.selectionStart.coerceAtLeast(0)
+                messageText.text?.insert(start, emoji)
+            }
+            fragment.show(childFragmentManager, EmojiPickerFragment.TAG)
+        }
         tagsText = view.findViewById(R.id.publish_dialog_tags_text)
         priorityDropdown = view.findViewById(R.id.publish_dialog_priority_dropdown)
         uploadProgress = view.findViewById(R.id.publish_dialog_upload_progress)

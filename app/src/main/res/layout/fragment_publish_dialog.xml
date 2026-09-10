@@ -108,6 +108,15 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <ImageButton
+                    android:id="@+id/publish_dialog_emoji_button"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_emoji_gray_24dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/message_bar_emoji_button_description"
+                    app:tint="?attr/colorOutline"
+                    android:layout_marginTop="4dp"/>
 
                 <!-- Tags (toggleable) -->
                 <com.google.android.material.textfield.TextInputLayout

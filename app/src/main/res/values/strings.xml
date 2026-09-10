@@ -265,6 +265,7 @@
     <string name="message_bar_publish_button_description">Publish message</string>
     <string name="message_bar_expand_button_description">More options</string>
     <string name="message_bar_encrypt_icon_description">Encryption enabled</string>
+    <string name="message_bar_emoji_button_description">Insert emoji</string>
 
     <!-- Detail activity: Publish FAB -->
     <string name="detail_fab_publish_description">Publish notification</string>

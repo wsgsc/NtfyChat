@@ -62,6 +62,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
 
 class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSettingsListener, PublishFragment.PublishListener {
     private val viewModel by viewModels<DetailViewModel> {
@@ -93,6 +95,7 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
     private lateinit var messageBarPublishButton: FloatingActionButton
     private lateinit var messageBarExpandButton: ImageButton
     private lateinit var messageBarEncryptIcon: ImageView
+    private lateinit var messageBarEmojiButton: ImageButton
 
     // Action mode stuff
     private var actionMode: ActionMode? = null
@@ -397,6 +400,8 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         messageBarPublishButton = messageBar.findViewById(R.id.message_bar_publish_button)
         messageBarExpandButton = messageBar.findViewById(R.id.message_bar_expand_button)
         messageBarEncryptIcon = messageBar.findViewById(R.id.message_bar_encrypt_icon)
+        messageBarEmojiButton = messageBar.findViewById(R.id.message_bar_emoji_button)
+        messageBarEmojiButton.setOnClickListener { toggleEmojiPicker() }
 
         // Update encrypt icon based on subscription state
         lifecycleScope.launch(Dispatchers.IO) {
@@ -463,6 +468,30 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
         val hasText = messageBarText.text?.isNotBlank() == true
         messageBarPublishButton.isEnabled = hasText
         messageBarPublishButton.alpha = if (hasText) 1.0f else 0.38f
+    }
+
+    private fun toggleEmojiPicker() {
+        val existing = supportFragmentManager.findFragmentByTag(EmojiPickerFragment.TAG)
+        if (existing != null) {
+            (existing as EmojiPickerFragment).dismiss()
+            messageBarText.requestFocus()
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(messageBarText, InputMethodManager.SHOW_IMPLICIT)
+        } else {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(messageBarText.windowToken, 0)
+            messageBarText.postDelayed({
+                val fragment = EmojiPickerFragment()
+                fragment.onEmojiSelected = { emoji ->
+                    val editable = messageBarText.text
+                    if (editable != null) {
+                        val start = messageBarText.selectionStart.coerceAtLeast(0)
+                        editable.insert(start, emoji)
+                    }
+                }
+                fragment.show(supportFragmentManager, EmojiPickerFragment.TAG)
+            }, 150)
+        }
     }
 
     private fun openPublishDialog(initialMessage: String) {

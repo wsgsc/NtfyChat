@@ -38,7 +38,18 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/message_bar_expand_button_description"
                 app:tint="?attr/colorOutline"
-                android:layout_marginStart="4dp"/>
+                android:layout_marginStart="4dp"
+                android:visibility="gone"/>
+
+            <ImageButton
+                android:id="@+id/message_bar_emoji_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_emoji_gray_24dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/message_bar_emoji_button_description"
+                app:tint="?attr/colorOutline"
+                android:layout_marginStart="2dp"/>
 
             <ImageView
                 android:id="@+id/message_bar_encrypt_icon"
