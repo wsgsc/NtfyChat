@@ -574,5 +574,9 @@
     <string name="profile_item_about">About</string>
     <string name="profile_item_help">Help &amp; Documentation</string>
     <string name="profile_version">Version %1$s</string>
+    <string name="edit_profile_title">Edit Profile</string>
+    <string name="edit_profile_save">Save</string>
+    <string name="edit_profile_saved">Profile saved</string>
+    <string name="edit_profile_save_error">Failed to save profile</string>
 
 </resources>

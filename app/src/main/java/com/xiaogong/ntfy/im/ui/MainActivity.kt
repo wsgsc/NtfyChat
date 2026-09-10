@@ -33,6 +33,7 @@ import androidx.core.view.doOnLayout
 import androidx.core.view.updatePadding
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.work.Constraints
@@ -76,8 +77,12 @@ import java.util.concurrent.TimeUnit
 import androidx.core.view.size
 import androidx.core.view.get
 import androidx.core.net.toUri
+import androidx.fragment.app.DialogFragment
+import com.xiaogong.ntfy.im.db.CustomHeader
+import com.xiaogong.ntfy.im.db.User
 
-class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, NotificationFragment.NotificationSettingsListener {
+class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, NotificationFragment.NotificationSettingsListener,
+    UserFragment.UserDialogListener, CustomHeaderFragment.CustomHeaderDialogListener {
     private val viewModel by viewModels<SubscriptionsViewModel> {
         SubscriptionsViewModelFactory((application as Application).repository)
     }
@@ -195,8 +200,28 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
             Colors.onPrimary(this)
         )
         mainList.adapter = adapter
-        
         mainList.clipToPadding = false
+
+        val swipeCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.absoluteAdapterPosition
+                val subscription = adapter.currentList[position]
+                MaterialAlertDialogBuilder(this@MainActivity)
+                    .setMessage(R.string.main_action_mode_delete_dialog_message)
+                    .setPositiveButton(R.string.main_action_mode_delete_dialog_permanently_delete) { _, _ ->
+                        viewModel.remove(this@MainActivity, subscription.id)
+                    }
+                    .setNegativeButton(R.string.main_action_mode_delete_dialog_cancel) { _, _ ->
+                        adapter.notifyItemChanged(position)
+                    }
+                    .setOnCancelListener { adapter.notifyItemChanged(position) }
+                    .create()
+                    .also { it.setOnShowListener { _ -> it.getButton(AlertDialog.BUTTON_POSITIVE).dangerButton() } }
+                    .show()
+            }
+        }
+        ItemTouchHelper(swipeCallback).attachToRecyclerView(mainList)
 
         viewModel.list().observe(this) {
             it?.let { subscriptions ->
@@ -920,5 +945,37 @@ class MainActivity : AppCompatActivity(), AddFragment.SubscribeListener, Notific
         const val POLL_WORKER_INTERVAL_MINUTES = 60L
         const val DELETE_WORKER_INTERVAL_MINUTES = 8 * 60L
         const val SERVICE_START_WORKER_INTERVAL_MINUTES = 3 * 60L
+    }
+
+    private fun profileFragment(): ProfileFragment? =
+        supportFragmentManager.findFragmentById(R.id.fragment_container) as? ProfileFragment
+
+    override fun onAddUser(dialog: DialogFragment, user: User) {
+        profileFragment()?.onAddUser(dialog, user)
+    }
+
+    override fun onUpdateUser(dialog: DialogFragment, user: User) {
+        profileFragment()?.onUpdateUser(dialog, user)
+    }
+
+    override fun onDeleteUser(dialog: DialogFragment, baseUrl: String) {
+        profileFragment()?.onDeleteUser(dialog, baseUrl)
+    }
+
+    override fun onAddCustomHeader(dialog: DialogFragment, header: CustomHeader) {
+        profileFragment()?.onAddCustomHeader(dialog, header)
+    }
+
+    override fun onUpdateCustomHeader(dialog: DialogFragment, oldHeader: CustomHeader, newHeader: CustomHeader) {
+        profileFragment()?.onUpdateCustomHeader(dialog, oldHeader, newHeader)
+    }
+
+    override fun onDeleteCustomHeader(dialog: DialogFragment, header: CustomHeader) {
+        profileFragment()?.onDeleteCustomHeader(dialog, header)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        profileFragment()?.onPermissionsResult(requestCode, grantResults)
     }
 }

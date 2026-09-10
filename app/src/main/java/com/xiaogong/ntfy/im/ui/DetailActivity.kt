@@ -22,7 +22,6 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -335,29 +334,6 @@ class DetailActivity : AppCompatActivity(), NotificationFragment.NotificationSet
                 maybeCancelNotificationPopups(it)
             }
         }
-
-        // Swipe to remove
-        val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                return false
-            }
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                val notification = adapter.get(viewHolder.absoluteAdapterPosition)
-                lifecycleScope.launch(Dispatchers.IO) {
-                    repository.markAsDeleted(notification.id)
-                }
-                val snackbar = Snackbar.make(mainList, R.string.detail_item_snack_deleted, Snackbar.LENGTH_SHORT)
-                snackbar.setAction(R.string.detail_item_snack_undo) {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        // Note: undo only restores the latest notification, not the entire sequence
-                        repository.undeleteNotification(notification.id)
-                    }
-                }
-                snackbar.show()
-            }
-        }
-        val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(mainList)
 
         // Scroll down when new notification is added
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {

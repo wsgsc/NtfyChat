@@ -71,6 +71,12 @@
             </intent-filter>
         </activity>
 
+        <!-- Edit profile activity -->
+        <activity
+                android:name=".ui.EditProfileActivity"
+                android:parentActivityName=".ui.MainActivity">
+        </activity>
+
         <!-- Settings activity -->
         <activity
                 android:name=".ui.SettingsActivity"

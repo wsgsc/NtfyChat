@@ -503,5 +503,9 @@
     <string name="profile_item_about">关于</string>
     <string name="profile_item_help">帮助与文档</string>
     <string name="profile_version">版本 %1$s</string>
+    <string name="edit_profile_title">编辑资料</string>
+    <string name="edit_profile_save">保存</string>
+    <string name="edit_profile_saved">资料已保存</string>
+    <string name="edit_profile_save_error">保存失败</string>
 
 </resources>

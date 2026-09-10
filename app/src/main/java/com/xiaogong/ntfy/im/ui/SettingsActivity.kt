@@ -1099,7 +1099,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     companion object {
         private const val TAG = "NtfySettingsActivity"
         private const val TITLE_TAG = "title"
-        private const val REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD = 2586
+        internal const val REQUEST_CODE_WRITE_EXTERNAL_STORAGE_PERMISSION_FOR_AUTO_DOWNLOAD = 2586
         private const val AUTO_DOWNLOAD_SELECTION_NOT_SET = -99L
         private const val BACKUP_EVERYTHING = "everything"
         private const val BACKUP_EVERYTHING_NO_USERS = "everything_no_users"
